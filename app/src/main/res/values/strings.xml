@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UniTasky</string>
+    <string name="mensaje_inicio">Organiza tus tareas académicas</string>
+    <string name="comenzar">Comenzar</string>
+</resources>
