@@ -2,9 +2,11 @@
 <resources>
     <style name="Theme.UniTasky" parent="android:style/Theme.Material.Light.NoActionBar">
         <item name="android:fontFamily">sans</item>
-        <item name="android:colorAccent">@color/azul_principal</item>
-        <item name="android:navigationBarColor">@color/fondo_principal</item>
-        <item name="android:statusBarColor">@color/fondo_principal</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:colorAccent">@color/amarillo_principal</item>
+        <item name="android:windowBackground">@color/fondo_principal</item>
+        <item name="android:statusBarColor">@color/azul_oscuro</item>
+        <item name="android:navigationBarColor">@color/blanco</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 </resources>

@@ -3,4 +3,45 @@
     <string name="app_name">UniTasky</string>
     <string name="mensaje_inicio">Organiza tus tareas académicas</string>
     <string name="comenzar">Comenzar</string>
+
+    <string name="login_bienvenida">Organiza tus tareas y alcanza tus metas</string>
+    <string name="correo_electronico">Correo electrónico</string>
+    <string name="correo_hint">correo@ejemplo.com</string>
+    <string name="contrasena">Contraseña</string>
+    <string name="password_hint">Mínimo 6 caracteres</string>
+    <string name="mostrar_contrasena">Mostrar contraseña</string>
+    <string name="ocultar_contrasena">Ocultar contraseña</string>
+    <string name="olvidaste_contrasena">¿Olvidaste tu contraseña?</string>
+    <string name="iniciar_sesion">Iniciar sesión</string>
+    <string name="no_tienes_cuenta">¿No tienes cuenta? Regístrate</string>
+
+    <string name="crear_cuenta">Crear cuenta</string>
+    <string name="registro_subtitulo">Crea tu perfil para comenzar a organizarte</string>
+    <string name="nombre_completo">Nombre completo</string>
+    <string name="nombre_hint">Nombre y apellido</string>
+    <string name="confirmar_contrasena">Confirmar contraseña</string>
+    <string name="confirmar_password_hint">Repite tu contraseña</string>
+    <string name="ya_tienes_cuenta">¿Ya tienes cuenta? Inicia sesión</string>
+
+    <string name="bienvenido_unitasky">Bienvenido a UniTasky</string>
+    <string name="inicio_subtitulo">Organiza tus actividades universitarias</string>
+    <string name="mis_tareas">Mis tareas</string>
+    <string name="agregar_tarea">Agregar tarea</string>
+    <string name="proximas_entregas">Próximas entregas</string>
+    <string name="accesos_rapidos">Tus accesos rápidos</string>
+    <string name="inicio_nota">Avance 02 · Funciones principales en desarrollo</string>
+
+    <string name="error_correo_vacio">Ingrese su correo</string>
+    <string name="error_correo_invalido">Correo no válido</string>
+    <string name="error_password_vacio">Ingrese su contraseña</string>
+    <string name="error_password_corta">Mínimo 6 caracteres</string>
+    <string name="error_nombre_vacio">Ingrese su nombre</string>
+    <string name="error_confirmar_password">Confirme su contraseña</string>
+    <string name="error_password_distinta">Las contraseñas no coinciden</string>
+
+    <string name="toast_login_correcto">Inicio de sesión correcto</string>
+    <string name="toast_cuenta_creada">Cuenta creada correctamente</string>
+    <string name="toast_proximos_avances">Función disponible en próximos avances</string>
+    <string name="toast_recuperacion">Recuperación disponible en próximos avances</string>
+    <string name="logo_description">Logo de UniTasky</string>
 </resources>
