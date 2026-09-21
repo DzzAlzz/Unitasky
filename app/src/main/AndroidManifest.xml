@@ -8,6 +8,18 @@
         android:theme="@style/Theme.UniTasky">
 
         <activity
+            android:name=".ProximasEntregasActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AgregarTareaActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MisTareasActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".InicioActivity"
             android:exported="false" />
 
@@ -16,11 +28,11 @@
             android:exported="false" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="false" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
