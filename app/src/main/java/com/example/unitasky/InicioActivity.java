@@ -1,6 +1,7 @@
 package com.example.unitasky;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,12 +17,17 @@ public class InicioActivity extends Activity {
         Button btnAgregarTarea = findViewById(R.id.btnAgregarTarea);
         Button btnProximasEntregas = findViewById(R.id.btnProximasEntregas);
 
-        btnMisTareas.setOnClickListener(v -> mostrarProximoAvance());
-        btnAgregarTarea.setOnClickListener(v -> mostrarProximoAvance());
-        btnProximasEntregas.setOnClickListener(v -> mostrarProximoAvance());
-    }
+        btnMisTareas.setOnClickListener(v -> {
+            Intent intent = new Intent(InicioActivity.this, MisTareasActivity.class);
+            startActivity(intent);
+        });
 
-    private void mostrarProximoAvance() {
-        Toast.makeText(this, R.string.toast_proximos_avances, Toast.LENGTH_SHORT).show();
+        btnAgregarTarea.setOnClickListener(v -> {
+            Intent intent = new Intent(InicioActivity.this, AgregarTareaActivity.class);
+            startActivity(intent);
+        });
+
+        btnProximasEntregas.setOnClickListener(v ->
+                Toast.makeText(this, R.string.toast_proximos_avances, Toast.LENGTH_SHORT).show());
     }
 }

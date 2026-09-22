@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="app_name">UniTasky</string>
     <string name="mensaje_inicio">Organiza tus tareas académicas</string>
     <string name="comenzar">Comenzar</string>
-
     <string name="login_bienvenida">Organiza tus tareas y alcanza tus metas</string>
     <string name="correo_electronico">Correo electrónico</string>
     <string name="correo_hint">correo@ejemplo.com</string>
@@ -14,7 +13,6 @@
     <string name="olvidaste_contrasena">¿Olvidaste tu contraseña?</string>
     <string name="iniciar_sesion">Iniciar sesión</string>
     <string name="no_tienes_cuenta">¿No tienes cuenta? Regístrate</string>
-
     <string name="crear_cuenta">Crear cuenta</string>
     <string name="registro_subtitulo">Crea tu perfil para comenzar a organizarte</string>
     <string name="nombre_completo">Nombre completo</string>
@@ -22,15 +20,13 @@
     <string name="confirmar_contrasena">Confirmar contraseña</string>
     <string name="confirmar_password_hint">Repite tu contraseña</string>
     <string name="ya_tienes_cuenta">¿Ya tienes cuenta? Inicia sesión</string>
-
     <string name="bienvenido_unitasky">Bienvenido a UniTasky</string>
     <string name="inicio_subtitulo">Organiza tus actividades universitarias</string>
     <string name="mis_tareas">Mis tareas</string>
     <string name="agregar_tarea">Agregar tarea</string>
     <string name="proximas_entregas">Próximas entregas</string>
     <string name="accesos_rapidos">Tus accesos rápidos</string>
-    <string name="inicio_nota">Avance 02 · Funciones principales en desarrollo</string>
-
+    <string name="inicio_nota">Avance 03 · Organización básica de tareas</string>
     <string name="error_correo_vacio">Ingrese su correo</string>
     <string name="error_correo_invalido">Correo no válido</string>
     <string name="error_password_vacio">Ingrese su contraseña</string>
@@ -38,10 +34,36 @@
     <string name="error_nombre_vacio">Ingrese su nombre</string>
     <string name="error_confirmar_password">Confirme su contraseña</string>
     <string name="error_password_distinta">Las contraseñas no coinciden</string>
-
     <string name="toast_login_correcto">Inicio de sesión correcto</string>
     <string name="toast_cuenta_creada">Cuenta creada correctamente</string>
     <string name="toast_proximos_avances">Función disponible en próximos avances</string>
     <string name="toast_recuperacion">Recuperación disponible en próximos avances</string>
     <string name="logo_description">Logo de UniTasky</string>
+    <string name="mis_tareas_subtitulo">Revisa y organiza tus actividades pendientes</string>
+    <string name="tarea_ejemplo_1">Informe de Arquitectura</string>
+    <string name="fecha_ejemplo_1">Fecha: 10/09/2026</string>
+    <string name="prioridad_ejemplo_alta">Prioridad: Alta</string>
+    <string name="tarea_ejemplo_2">Actividad de Inglés</string>
+    <string name="fecha_ejemplo_2">Fecha: 12/09/2026</string>
+    <string name="prioridad_ejemplo_media">Prioridad: Media</string>
+    <string name="agregar_tarea_mas">+ Agregar tarea</string>
+    <string name="agregar_tarea_subtitulo">Registra una actividad universitaria de forma sencilla</string>
+    <string name="titulo_tarea">Título de la tarea</string>
+    <string name="titulo_tarea_hint">Ej: Informe de Arquitectura</string>
+    <string name="descripcion_tarea">Descripción</string>
+    <string name="descripcion_tarea_hint">Detalle opcional de la actividad</string>
+    <string name="fecha_entrega">Fecha de entrega</string>
+    <string name="fecha_hint">DD/MM/AAAA</string>
+    <string name="prioridad">Prioridad</string>
+    <string name="guardar_tarea">Guardar tarea</string>
+    <string name="error_titulo_tarea">Ingrese el título de la tarea</string>
+    <string name="error_fecha_tarea">Ingrese una fecha de entrega</string>
+    <string name="toast_tarea_agregada">Tarea agregada correctamente</string>
+    <string name="formato_fecha">Fecha: %1$s</string>
+    <string name="formato_prioridad">Prioridad: %1$s</string>
+    <string-array name="prioridades">
+        <item>Baja</item>
+        <item>Media</item>
+        <item>Alta</item>
+    </string-array>
 </resources>
