@@ -26,7 +26,8 @@
     <string name="agregar_tarea">Agregar tarea</string>
     <string name="proximas_entregas">Próximas entregas</string>
     <string name="accesos_rapidos">Tus accesos rápidos</string>
-    <string name="inicio_nota">Avance 04 · Estados y próximas entregas</string>
+    <string name="inicio_nota">Avance 05 · Tipos de actividad y lista temporal</string>
+
     <string name="error_correo_vacio">Ingrese su correo</string>
     <string name="error_correo_invalido">Correo no válido</string>
     <string name="error_password_vacio">Ingrese su contraseña</string>
@@ -41,6 +42,7 @@
     <string name="logo_description">Logo de UniTasky</string>
 
     <string name="mis_tareas_subtitulo">Revisa y organiza tus actividades pendientes</string>
+    <string name="mis_tareas_subtitulo_avance05">Tus tareas, trabajos y evaluaciones se mantienen durante la sesión</string>
     <string name="tarea_ejemplo_1">Informe de Arquitectura</string>
     <string name="fecha_ejemplo_1">Fecha: 23/09/2026</string>
     <string name="prioridad_ejemplo_alta">Prioridad: Alta</string>
@@ -51,32 +53,47 @@
     <string name="marcar_completada">Marcar como completada</string>
     <string name="toast_tarea_completada">Tarea marcada como completada</string>
     <string name="agregar_tarea_mas">+ Agregar tarea</string>
+    <string name="sin_tareas">Aún no hay actividades registradas.</string>
+    <string name="nota_memoria_temporal">En este avance las actividades se guardan temporalmente mientras la app está abierta. La persistencia permanente se puede incorporar más adelante.</string>
 
     <string name="agregar_tarea_subtitulo">Registra una actividad universitaria de forma sencilla</string>
-    <string name="titulo_tarea">Título de la tarea</string>
+    <string name="titulo_tarea">Título de la actividad</string>
     <string name="titulo_tarea_hint">Ej: Informe de Arquitectura</string>
     <string name="descripcion_tarea">Descripción</string>
     <string name="descripcion_tarea_hint">Detalle opcional de la actividad</string>
+    <string name="tipo_actividad">Tipo de actividad</string>
     <string name="fecha_entrega">Fecha de entrega</string>
     <string name="fecha_hint">DD/MM/AAAA</string>
     <string name="prioridad">Prioridad</string>
     <string name="estado_tarea">Estado</string>
     <string name="estado_pendiente">Pendiente</string>
     <string name="estado_completada">Completada</string>
-    <string name="guardar_tarea">Guardar tarea</string>
-    <string name="error_titulo_tarea">Ingrese el título de la tarea</string>
+    <string name="guardar_tarea">Guardar actividad</string>
+    <string name="error_titulo_tarea">Ingrese el título de la actividad</string>
     <string name="error_fecha_tarea">Ingrese una fecha de entrega</string>
-    <string name="toast_tarea_agregada">Tarea agregada correctamente</string>
+    <string name="error_formato_fecha">Use el formato DD/MM/AAAA</string>
+    <string name="toast_tarea_agregada">Actividad agregada correctamente</string>
+    <string name="formato_tipo">Tipo: %1$s</string>
     <string name="formato_fecha">Fecha: %1$s</string>
+    <string name="formato_entrega">Entrega: %1$s</string>
     <string name="formato_prioridad">Prioridad: %1$s</string>
     <string name="formato_estado">Estado: %1$s</string>
 
-    <string name="proximas_entregas_subtitulo">Revisa las actividades que debes entregar pronto</string>
+    <string name="proximas_entregas_subtitulo">Revisa las actividades pendientes ordenadas por fecha</string>
+    <string name="proximas_entregas_subtitulo_avance05">Actividades pendientes ordenadas por su fecha de entrega</string>
     <string name="proxima_tarea_1">Informe de Arquitectura</string>
     <string name="proxima_fecha_1">Entrega: 23/09/2026</string>
     <string name="proxima_tarea_2">Actividad de Inglés</string>
     <string name="proxima_fecha_2">Entrega: 25/09/2026</string>
     <string name="proximas_entregas_nota">Los recordatorios y notificaciones se agregarán en avances posteriores.</string>
+    <string name="proximas_entregas_nota_avance05">Solo se muestran actividades pendientes. Las notificaciones y recordatorios permanentes quedan para avances posteriores.</string>
+    <string name="sin_entregas_pendientes">No tienes entregas pendientes.</string>
+
+    <string-array name="tipos_actividad">
+        <item>Tarea</item>
+        <item>Trabajo</item>
+        <item>Evaluación</item>
+    </string-array>
 
     <string-array name="prioridades">
         <item>Baja</item>

@@ -81,6 +81,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:text="@string/tipo_actividad"
+                android:textColor="@color/texto_principal"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinnerTipoActividad"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/bg_input"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 android:text="@string/fecha_entrega"
                 android:textColor="@color/texto_principal"
                 android:textStyle="bold" />

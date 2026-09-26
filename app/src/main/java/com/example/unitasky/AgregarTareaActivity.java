@@ -9,10 +9,16 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class AgregarTareaActivity extends Activity {
 
     private EditText edtTitulo;
+    private EditText edtDescripcion;
     private EditText edtFecha;
+    private Spinner spinnerTipo;
     private Spinner spinnerPrioridad;
     private Spinner spinnerEstado;
 
@@ -22,33 +28,35 @@ public class AgregarTareaActivity extends Activity {
         setContentView(R.layout.activity_agregar_tarea);
 
         edtTitulo = findViewById(R.id.edtTituloTarea);
+        edtDescripcion = findViewById(R.id.edtDescripcionTarea);
         edtFecha = findViewById(R.id.edtFechaTarea);
+        spinnerTipo = findViewById(R.id.spinnerTipoActividad);
         spinnerPrioridad = findViewById(R.id.spinnerPrioridad);
         spinnerEstado = findViewById(R.id.spinnerEstado);
         Button btnGuardar = findViewById(R.id.btnGuardarTarea);
 
-        ArrayAdapter<CharSequence> adapterPrioridad = ArrayAdapter.createFromResource(
-                this,
-                R.array.prioridades,
-                android.R.layout.simple_spinner_item
-        );
-        adapterPrioridad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerPrioridad.setAdapter(adapterPrioridad);
-
-        ArrayAdapter<CharSequence> adapterEstado = ArrayAdapter.createFromResource(
-                this,
-                R.array.estados_tarea,
-                android.R.layout.simple_spinner_item
-        );
-        adapterEstado.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerEstado.setAdapter(adapterEstado);
+        configurarSpinner(spinnerTipo, R.array.tipos_actividad);
+        configurarSpinner(spinnerPrioridad, R.array.prioridades);
+        configurarSpinner(spinnerEstado, R.array.estados_tarea);
 
         btnGuardar.setOnClickListener(v -> guardarTarea());
     }
 
+    private void configurarSpinner(Spinner spinner, int recursoArray) {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                recursoArray,
+                android.R.layout.simple_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+    }
+
     private void guardarTarea() {
         String titulo = edtTitulo.getText().toString().trim();
+        String descripcion = edtDescripcion.getText().toString().trim();
         String fecha = edtFecha.getText().toString().trim();
+        String tipo = spinnerTipo.getSelectedItem().toString();
         String prioridad = spinnerPrioridad.getSelectedItem().toString();
         String estado = spinnerEstado.getSelectedItem().toString();
 
@@ -67,14 +75,39 @@ public class AgregarTareaActivity extends Activity {
             return;
         }
 
+        if (!fechaValida(fecha)) {
+            edtFecha.setError(getString(R.string.error_formato_fecha));
+            edtFecha.requestFocus();
+            return;
+        }
+
+        TareaRepository.inicializarEjemplos();
+        Tarea nuevaTarea = new Tarea(
+                titulo,
+                descripcion,
+                fecha,
+                tipo,
+                prioridad,
+                estado
+        );
+        TareaRepository.agregarTarea(nuevaTarea);
+
         Toast.makeText(this, R.string.toast_tarea_agregada, Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(AgregarTareaActivity.this, MisTareasActivity.class);
-        intent.putExtra("titulo_tarea", titulo);
-        intent.putExtra("fecha_tarea", fecha);
-        intent.putExtra("prioridad_tarea", prioridad);
-        intent.putExtra("estado_tarea", estado);
         startActivity(intent);
         finish();
+    }
+
+    private boolean fechaValida(String fecha) {
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        formato.setLenient(false);
+
+        try {
+            formato.parse(fecha);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
     }
 }

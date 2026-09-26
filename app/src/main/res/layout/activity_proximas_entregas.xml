@@ -26,88 +26,37 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="@string/proximas_entregas_subtitulo"
+            android:text="@string/proximas_entregas_subtitulo_avance05"
             android:textColor="@color/texto_secundario"
             android:textSize="15sp" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/txtSinEntregas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:background="@drawable/bg_card"
-            android:elevation="3dp"
-            android:orientation="vertical"
-            android:padding="18dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/proxima_tarea_1"
-                android:textColor="@color/texto_principal"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/proxima_fecha_1"
-                android:textColor="@color/texto_secundario"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/prioridad_ejemplo_alta"
-                android:textColor="@color/azul_principal"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:gravity="center"
+            android:padding="18dp"
+            android:text="@string/sin_entregas_pendientes"
+            android:textColor="@color/texto_secundario"
+            android:visibility="gone" />
 
         <LinearLayout
+            android:id="@+id/contenedorEntregas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:background="@drawable/bg_card"
-            android:elevation="3dp"
-            android:orientation="vertical"
-            android:padding="18dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/proxima_tarea_2"
-                android:textColor="@color/texto_principal"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/proxima_fecha_2"
-                android:textColor="@color/texto_secundario"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/prioridad_ejemplo_media"
-                android:textColor="@color/amarillo_oscuro"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:layout_marginTop="18dp"
+            android:orientation="vertical" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/bg_card"
             android:gravity="center"
             android:padding="16dp"
-            android:text="@string/proximas_entregas_nota"
+            android:text="@string/proximas_entregas_nota_avance05"
             android:textColor="@color/texto_secundario"
             android:textSize="13sp" />
 
