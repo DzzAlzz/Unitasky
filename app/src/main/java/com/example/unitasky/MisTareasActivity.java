@@ -1,6 +1,7 @@
 package com.example.unitasky;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -69,6 +70,8 @@ public class MisTareasActivity extends Activity {
             TextView txtPrioridad = item.findViewById(R.id.txtItemPrioridad);
             TextView txtEstado = item.findViewById(R.id.txtItemEstado);
             Button btnCompletar = item.findViewById(R.id.btnItemCompletar);
+            Button btnEditar = item.findViewById(R.id.btnItemEditar);
+            Button btnEliminar = item.findViewById(R.id.btnItemEliminar);
 
             txtTitulo.setText(tarea.getTitulo());
             txtTipo.setText(getString(R.string.formato_tipo, tarea.getTipo()));
@@ -83,9 +86,13 @@ public class MisTareasActivity extends Activity {
                 txtDescripcion.setText(tarea.getDescripcion());
             }
 
+            btnEditar.setOnClickListener(v -> abrirEdicion(tarea));
+            btnEliminar.setOnClickListener(v -> confirmarEliminacion(tarea));
+
             if (getString(R.string.estado_completada).equals(tarea.getEstado())) {
                 btnCompletar.setVisibility(View.GONE);
             } else {
+                btnCompletar.setVisibility(View.VISIBLE);
                 btnCompletar.setOnClickListener(v -> {
                     String estadoCompletada = getString(R.string.estado_completada);
                     if (tareaRepository.marcarComoCompletada(tarea, estadoCompletada)) {
@@ -107,6 +114,30 @@ public class MisTareasActivity extends Activity {
             }
 
             contenedorTareas.addView(item);
+        }
+    }
+
+    private void abrirEdicion(Tarea tarea) {
+        Intent intent = new Intent(MisTareasActivity.this, EditarTareaActivity.class);
+        intent.putExtra(EditarTareaActivity.EXTRA_TAREA_ID, tarea.getId());
+        startActivity(intent);
+    }
+
+    private void confirmarEliminacion(Tarea tarea) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.eliminar_tarea)
+                .setMessage(R.string.confirmar_eliminar_tarea)
+                .setNegativeButton(R.string.cancelar, null)
+                .setPositiveButton(R.string.eliminar, (dialog, which) -> eliminarTarea(tarea))
+                .show();
+    }
+
+    private void eliminarTarea(Tarea tarea) {
+        if (tareaRepository.eliminarTarea(tarea.getId())) {
+            Toast.makeText(this, R.string.toast_tarea_eliminada, Toast.LENGTH_SHORT).show();
+            mostrarTareas();
+        } else {
+            Toast.makeText(this, R.string.toast_error_eliminar_tarea, Toast.LENGTH_SHORT).show();
         }
     }
 

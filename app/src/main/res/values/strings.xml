@@ -26,7 +26,7 @@
     <string name="agregar_tarea">Agregar tarea</string>
     <string name="proximas_entregas">Próximas entregas</string>
     <string name="accesos_rapidos">Tus accesos rápidos</string>
-    <string name="inicio_nota">Avance 08 · Consulta y visualización de tareas con SQLite</string>
+    <string name="inicio_nota">Avance 09 · Edición y eliminación de tareas con SQLite</string>
 
     <string name="volver">← Volver</string>
 
@@ -45,6 +45,7 @@
 
     <string name="mis_tareas_subtitulo">Revisa y organiza tus actividades pendientes</string>
     <string name="mis_tareas_subtitulo_avance08">Tus tareas guardadas se consultan directamente desde SQLite</string>
+    <string name="mis_tareas_subtitulo_avance09">Consulta, edita o elimina tus tareas guardadas en SQLite</string>
     <string name="tarea_ejemplo_1">Informe de Arquitectura</string>
     <string name="fecha_ejemplo_1">Fecha: 23/09/2026</string>
     <string name="prioridad_ejemplo_alta">Prioridad: Alta</string>
@@ -56,7 +57,7 @@
     <string name="toast_tarea_completada">Tarea marcada como completada</string>
     <string name="agregar_tarea_mas">+ Agregar tarea</string>
     <string name="sin_tareas">No tienes tareas registradas.</string>
-    <string name="nota_memoria_temporal">Las tareas se recuperan desde SQLite y permanecen guardadas aunque cierres la aplicación.</string>
+    <string name="nota_memoria_temporal">Las tareas se guardan en SQLite y ahora también puedes editarlas o eliminarlas.</string>
 
     <string name="agregar_tarea_subtitulo">Registra una actividad universitaria de forma sencilla</string>
     <string name="titulo_tarea">Título de la actividad</string>
@@ -82,6 +83,20 @@
     <string name="formato_entrega">Entrega: %1$s</string>
     <string name="formato_prioridad">Prioridad: %1$s</string>
     <string name="formato_estado">Estado: %1$s</string>
+
+    <string name="editar">Editar</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="editar_tarea">Editar tarea</string>
+    <string name="editar_tarea_subtitulo">Modifica los datos de la actividad seleccionada</string>
+    <string name="guardar_cambios">Guardar cambios</string>
+    <string name="eliminar_tarea">Eliminar tarea</string>
+    <string name="confirmar_eliminar_tarea">¿Estás seguro de que deseas eliminar esta tarea?</string>
+    <string name="toast_tarea_editada">Actividad actualizada correctamente en SQLite</string>
+    <string name="toast_error_editar_tarea">No se pudo actualizar la actividad</string>
+    <string name="toast_tarea_eliminada">Actividad eliminada correctamente de SQLite</string>
+    <string name="toast_error_eliminar_tarea">No se pudo eliminar la actividad</string>
+    <string name="toast_tarea_no_encontrada">No se encontró la actividad seleccionada</string>
 
     <string name="proximas_entregas_subtitulo">Revisa las actividades pendientes ordenadas por fecha</string>
     <string name="proximas_entregas_subtitulo_avance05">Actividades pendientes ordenadas por su fecha de entrega</string>

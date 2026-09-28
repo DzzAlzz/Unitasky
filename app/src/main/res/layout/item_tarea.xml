@@ -70,4 +70,40 @@
         android:textAllCaps="false"
         android:textColor="@color/blanco" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnItemEditar"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_boton_azul"
+            android:backgroundTint="@color/azul_principal"
+            android:text="@string/editar"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textStyle="bold" />
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/btnItemEliminar"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_boton_amarillo"
+            android:backgroundTint="@color/amarillo_principal"
+            android:text="@string/eliminar"
+            android:textAllCaps="false"
+            android:textColor="@color/texto_boton_amarillo"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
 </LinearLayout>

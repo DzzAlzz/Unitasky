@@ -76,30 +76,71 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
 
         try {
-            int indiceId = cursor.getColumnIndexOrThrow(COL_ID);
-            int indiceTitulo = cursor.getColumnIndexOrThrow(COL_TITULO);
-            int indiceDescripcion = cursor.getColumnIndexOrThrow(COL_DESCRIPCION);
-            int indiceTipo = cursor.getColumnIndexOrThrow(COL_TIPO);
-            int indiceFecha = cursor.getColumnIndexOrThrow(COL_FECHA);
-            int indicePrioridad = cursor.getColumnIndexOrThrow(COL_PRIORIDAD);
-            int indiceEstado = cursor.getColumnIndexOrThrow(COL_ESTADO);
-
             while (cursor.moveToNext()) {
-                tareas.add(new Tarea(
-                        cursor.getLong(indiceId),
-                        cursor.getString(indiceTitulo),
-                        cursor.getString(indiceDescripcion),
-                        cursor.getString(indiceFecha),
-                        cursor.getString(indiceTipo),
-                        cursor.getString(indicePrioridad),
-                        cursor.getString(indiceEstado)
-                ));
+                tareas.add(crearTareaDesdeCursor(cursor));
             }
         } finally {
             cursor.close();
         }
 
         return tareas;
+    }
+
+    public Tarea obtenerTareaPorId(long id) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(
+                TABLA_TAREAS,
+                null,
+                COL_ID + " = ?",
+                new String[]{String.valueOf(id)},
+                null,
+                null,
+                null,
+                "1"
+        );
+
+        try {
+            if (cursor.moveToFirst()) {
+                return crearTareaDesdeCursor(cursor);
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return null;
+    }
+
+    public boolean actualizarTarea(long id, String titulo, String descripcion,
+                                   String tipo, String fecha, String prioridad) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues valores = new ContentValues();
+        valores.put(COL_TITULO, titulo);
+        valores.put(COL_DESCRIPCION, descripcion);
+        valores.put(COL_TIPO, tipo);
+        valores.put(COL_FECHA, fecha);
+        valores.put(COL_PRIORIDAD, prioridad);
+
+        int filasActualizadas = db.update(
+                TABLA_TAREAS,
+                valores,
+                COL_ID + " = ?",
+                new String[]{String.valueOf(id)}
+        );
+
+        return filasActualizadas > 0;
+    }
+
+    public boolean eliminarTarea(long id) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        int filasEliminadas = db.delete(
+                TABLA_TAREAS,
+                COL_ID + " = ?",
+                new String[]{String.valueOf(id)}
+        );
+
+        return filasEliminadas > 0;
     }
 
     public boolean actualizarEstado(long id, String nuevoEstado) {
@@ -115,5 +156,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
 
         return filasActualizadas > 0;
+    }
+
+    private Tarea crearTareaDesdeCursor(Cursor cursor) {
+        int indiceId = cursor.getColumnIndexOrThrow(COL_ID);
+        int indiceTitulo = cursor.getColumnIndexOrThrow(COL_TITULO);
+        int indiceDescripcion = cursor.getColumnIndexOrThrow(COL_DESCRIPCION);
+        int indiceTipo = cursor.getColumnIndexOrThrow(COL_TIPO);
+        int indiceFecha = cursor.getColumnIndexOrThrow(COL_FECHA);
+        int indicePrioridad = cursor.getColumnIndexOrThrow(COL_PRIORIDAD);
+        int indiceEstado = cursor.getColumnIndexOrThrow(COL_ESTADO);
+
+        return new Tarea(
+                cursor.getLong(indiceId),
+                cursor.getString(indiceTitulo),
+                cursor.getString(indiceDescripcion),
+                cursor.getString(indiceFecha),
+                cursor.getString(indiceTipo),
+                cursor.getString(indicePrioridad),
+                cursor.getString(indiceEstado)
+        );
     }
 }

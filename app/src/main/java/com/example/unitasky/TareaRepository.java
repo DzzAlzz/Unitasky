@@ -26,6 +26,26 @@ public class TareaRepository {
         return databaseHelper.obtenerTareas();
     }
 
+    public Tarea obtenerTareaPorId(long id) {
+        return databaseHelper.obtenerTareaPorId(id);
+    }
+
+    public boolean actualizarTarea(long id, String titulo, String descripcion,
+                                   String tipo, String fecha, String prioridad) {
+        return databaseHelper.actualizarTarea(
+                id,
+                titulo,
+                descripcion,
+                tipo,
+                fecha,
+                prioridad
+        );
+    }
+
+    public boolean eliminarTarea(long id) {
+        return databaseHelper.eliminarTarea(id);
+    }
+
     public boolean marcarComoCompletada(Tarea tarea, String estadoCompletada) {
         boolean actualizado = databaseHelper.actualizarEstado(tarea.getId(), estadoCompletada);
         if (actualizado) {
