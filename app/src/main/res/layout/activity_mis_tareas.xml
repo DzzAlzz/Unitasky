@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="@string/mis_tareas_subtitulo_avance05"
+            android:text="@string/mis_tareas_subtitulo_avance08"
             android:textColor="@color/texto_secundario"
             android:textSize="15sp" />
 

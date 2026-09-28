@@ -26,7 +26,7 @@
     <string name="agregar_tarea">Agregar tarea</string>
     <string name="proximas_entregas">Próximas entregas</string>
     <string name="accesos_rapidos">Tus accesos rápidos</string>
-    <string name="inicio_nota">Avance 07 · Fecha automática y persistencia básica con SQLite</string>
+    <string name="inicio_nota">Avance 08 · Consulta y visualización de tareas con SQLite</string>
 
     <string name="volver">← Volver</string>
 
@@ -44,7 +44,7 @@
     <string name="logo_description">Logo de UniTasky</string>
 
     <string name="mis_tareas_subtitulo">Revisa y organiza tus actividades pendientes</string>
-    <string name="mis_tareas_subtitulo_avance05">Tus tareas, trabajos y evaluaciones ahora se guardan localmente con SQLite</string>
+    <string name="mis_tareas_subtitulo_avance08">Tus tareas guardadas se consultan directamente desde SQLite</string>
     <string name="tarea_ejemplo_1">Informe de Arquitectura</string>
     <string name="fecha_ejemplo_1">Fecha: 23/09/2026</string>
     <string name="prioridad_ejemplo_alta">Prioridad: Alta</string>
@@ -55,8 +55,8 @@
     <string name="marcar_completada">Marcar como completada</string>
     <string name="toast_tarea_completada">Tarea marcada como completada</string>
     <string name="agregar_tarea_mas">+ Agregar tarea</string>
-    <string name="sin_tareas">Aún no hay actividades registradas.</string>
-    <string name="nota_memoria_temporal">En este avance las actividades se guardan localmente en SQLite y permanecen aunque cierres la aplicación.</string>
+    <string name="sin_tareas">No tienes tareas registradas.</string>
+    <string name="nota_memoria_temporal">Las tareas se recuperan desde SQLite y permanecen guardadas aunque cierres la aplicación.</string>
 
     <string name="agregar_tarea_subtitulo">Registra una actividad universitaria de forma sencilla</string>
     <string name="titulo_tarea">Título de la actividad</string>
