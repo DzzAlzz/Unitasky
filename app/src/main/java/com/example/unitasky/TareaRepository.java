@@ -1,45 +1,40 @@
 package com.example.unitasky;
 
-import java.util.ArrayList;
+import android.content.Context;
+
 import java.util.List;
 
 public class TareaRepository {
 
-    private static final ArrayList<Tarea> tareas = new ArrayList<>();
+    private final DatabaseHelper databaseHelper;
 
-    private TareaRepository() {
-        // Evita crear instancias de esta clase de apoyo.
+    public TareaRepository(Context context) {
+        databaseHelper = new DatabaseHelper(context.getApplicationContext());
     }
 
-    public static void inicializarEjemplos() {
-        if (!tareas.isEmpty()) {
-            return;
+    public boolean agregarTarea(Tarea tarea) {
+        long idGenerado = databaseHelper.insertarTarea(tarea);
+        if (idGenerado == -1) {
+            return false;
         }
 
-        tareas.add(new Tarea(
-                "Informe de Arquitectura",
-                "Preparar el informe solicitado para la asignatura.",
-                "23/09/2026",
-                "Trabajo",
-                "Alta",
-                "Pendiente"
-        ));
-
-        tareas.add(new Tarea(
-                "Actividad de Inglés",
-                "Completar la actividad y revisar las respuestas.",
-                "25/09/2026",
-                "Tarea",
-                "Media",
-                "Pendiente"
-        ));
+        tarea.setId(idGenerado);
+        return true;
     }
 
-    public static void agregarTarea(Tarea tarea) {
-        tareas.add(tarea);
+    public List<Tarea> obtenerTareas() {
+        return databaseHelper.obtenerTareas();
     }
 
-    public static List<Tarea> obtenerTareas() {
-        return tareas;
+    public boolean marcarComoCompletada(Tarea tarea, String estadoCompletada) {
+        boolean actualizado = databaseHelper.actualizarEstado(tarea.getId(), estadoCompletada);
+        if (actualizado) {
+            tarea.setEstado(estadoCompletada);
+        }
+        return actualizado;
+    }
+
+    public void cerrar() {
+        databaseHelper.close();
     }
 }

@@ -3,6 +3,8 @@ package com.example.unitasky;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +23,8 @@ public class AgregarTareaActivity extends Activity {
     private Spinner spinnerTipo;
     private Spinner spinnerPrioridad;
     private Spinner spinnerEstado;
+    private TareaRepository tareaRepository;
+    private boolean actualizandoFecha = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +40,14 @@ public class AgregarTareaActivity extends Activity {
         Button btnVolver = findViewById(R.id.btnVolver);
         Button btnGuardar = findViewById(R.id.btnGuardarTarea);
 
+        tareaRepository = new TareaRepository(this);
+
         btnVolver.setOnClickListener(v -> finish());
 
         configurarSpinner(spinnerTipo, R.array.tipos_actividad);
         configurarSpinner(spinnerPrioridad, R.array.prioridades);
         configurarSpinner(spinnerEstado, R.array.estados_tarea);
+        configurarFormatoAutomaticoFecha();
 
         btnGuardar.setOnClickListener(v -> guardarTarea());
     }
@@ -53,6 +60,56 @@ public class AgregarTareaActivity extends Activity {
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+    }
+
+    private void configurarFormatoAutomaticoFecha() {
+        edtFecha.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No se necesita acción antes del cambio.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // El formato se aplica después del cambio.
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (actualizandoFecha) {
+                    return;
+                }
+
+                String numeros = editable.toString().replaceAll("[^0-9]", "");
+
+                if (numeros.length() > 8) {
+                    numeros = numeros.substring(0, 8);
+                }
+
+                String fechaFormateada = formatearFecha(numeros);
+
+                if (!fechaFormateada.equals(editable.toString())) {
+                    actualizandoFecha = true;
+                    edtFecha.setText(fechaFormateada);
+                    edtFecha.setSelection(fechaFormateada.length());
+                    actualizandoFecha = false;
+                }
+            }
+        });
+    }
+
+    private String formatearFecha(String numeros) {
+        if (numeros.length() <= 2) {
+            return numeros;
+        }
+
+        if (numeros.length() <= 4) {
+            return numeros.substring(0, 2) + "/" + numeros.substring(2);
+        }
+
+        return numeros.substring(0, 2) + "/" +
+                numeros.substring(2, 4) + "/" +
+                numeros.substring(4);
     }
 
     private void guardarTarea() {
@@ -84,7 +141,6 @@ public class AgregarTareaActivity extends Activity {
             return;
         }
 
-        TareaRepository.inicializarEjemplos();
         Tarea nuevaTarea = new Tarea(
                 titulo,
                 descripcion,
@@ -93,7 +149,11 @@ public class AgregarTareaActivity extends Activity {
                 prioridad,
                 estado
         );
-        TareaRepository.agregarTarea(nuevaTarea);
+
+        if (!tareaRepository.agregarTarea(nuevaTarea)) {
+            Toast.makeText(this, R.string.toast_error_guardar_tarea, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Toast.makeText(this, R.string.toast_tarea_agregada, Toast.LENGTH_SHORT).show();
 
@@ -104,6 +164,10 @@ public class AgregarTareaActivity extends Activity {
     }
 
     private boolean fechaValida(String fecha) {
+        if (!fecha.matches("\\d{2}/\\d{2}/\\d{4}")) {
+            return false;
+        }
+
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         formato.setLenient(false);
 
@@ -113,5 +177,13 @@ public class AgregarTareaActivity extends Activity {
         } catch (ParseException e) {
             return false;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (tareaRepository != null) {
+            tareaRepository.cerrar();
+        }
+        super.onDestroy();
     }
 }

@@ -10,10 +10,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 public class MisTareasActivity extends Activity {
 
     private LinearLayout contenedorTareas;
     private TextView txtSinTareas;
+    private TareaRepository tareaRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +28,9 @@ public class MisTareasActivity extends Activity {
         Button btnVolver = findViewById(R.id.btnVolver);
         Button btnAgregarTarea = findViewById(R.id.btnAgregarDesdeLista);
 
-        btnVolver.setOnClickListener(v -> finish());
+        tareaRepository = new TareaRepository(this);
 
-        TareaRepository.inicializarEjemplos();
+        btnVolver.setOnClickListener(v -> finish());
         mostrarTareas();
 
         btnAgregarTarea.setOnClickListener(v -> {
@@ -39,15 +42,16 @@ public class MisTareasActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (contenedorTareas != null) {
+        if (contenedorTareas != null && tareaRepository != null) {
             mostrarTareas();
         }
     }
 
     private void mostrarTareas() {
         contenedorTareas.removeAllViews();
+        List<Tarea> tareas = tareaRepository.obtenerTareas();
 
-        if (TareaRepository.obtenerTareas().isEmpty()) {
+        if (tareas.isEmpty()) {
             txtSinTareas.setVisibility(View.VISIBLE);
             return;
         }
@@ -55,7 +59,7 @@ public class MisTareasActivity extends Activity {
         txtSinTareas.setVisibility(View.GONE);
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        for (Tarea tarea : TareaRepository.obtenerTareas()) {
+        for (Tarea tarea : tareas) {
             View item = inflater.inflate(R.layout.item_tarea, contenedorTareas, false);
 
             TextView txtTitulo = item.findViewById(R.id.txtItemTitulo);
@@ -72,9 +76,10 @@ public class MisTareasActivity extends Activity {
             txtPrioridad.setText(getString(R.string.formato_prioridad, tarea.getPrioridad()));
             txtEstado.setText(getString(R.string.formato_estado, tarea.getEstado()));
 
-            if (tarea.getDescripcion().isEmpty()) {
+            if (tarea.getDescripcion() == null || tarea.getDescripcion().isEmpty()) {
                 txtDescripcion.setVisibility(View.GONE);
             } else {
+                txtDescripcion.setVisibility(View.VISIBLE);
                 txtDescripcion.setText(tarea.getDescripcion());
             }
 
@@ -82,21 +87,34 @@ public class MisTareasActivity extends Activity {
                 btnCompletar.setVisibility(View.GONE);
             } else {
                 btnCompletar.setOnClickListener(v -> {
-                    tarea.setEstado(getString(R.string.estado_completada));
-                    txtEstado.setText(getString(
-                            R.string.formato_estado,
-                            getString(R.string.estado_completada)
-                    ));
-                    btnCompletar.setVisibility(View.GONE);
-                    Toast.makeText(
-                            MisTareasActivity.this,
-                            R.string.toast_tarea_completada,
-                            Toast.LENGTH_SHORT
-                    ).show();
+                    String estadoCompletada = getString(R.string.estado_completada);
+                    if (tareaRepository.marcarComoCompletada(tarea, estadoCompletada)) {
+                        txtEstado.setText(getString(R.string.formato_estado, estadoCompletada));
+                        btnCompletar.setVisibility(View.GONE);
+                        Toast.makeText(
+                                MisTareasActivity.this,
+                                R.string.toast_tarea_completada,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    } else {
+                        Toast.makeText(
+                                MisTareasActivity.this,
+                                R.string.toast_error_actualizar_tarea,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
                 });
             }
 
             contenedorTareas.addView(item);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (tareaRepository != null) {
+            tareaRepository.cerrar();
+        }
+        super.onDestroy();
     }
 }

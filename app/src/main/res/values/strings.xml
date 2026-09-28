@@ -26,7 +26,7 @@
     <string name="agregar_tarea">Agregar tarea</string>
     <string name="proximas_entregas">Próximas entregas</string>
     <string name="accesos_rapidos">Tus accesos rápidos</string>
-    <string name="inicio_nota">Avance 06 · Navegación y retorno entre pantallas</string>
+    <string name="inicio_nota">Avance 07 · Fecha automática y persistencia básica con SQLite</string>
 
     <string name="volver">← Volver</string>
 
@@ -44,7 +44,7 @@
     <string name="logo_description">Logo de UniTasky</string>
 
     <string name="mis_tareas_subtitulo">Revisa y organiza tus actividades pendientes</string>
-    <string name="mis_tareas_subtitulo_avance05">Tus tareas, trabajos y evaluaciones se mantienen durante la sesión</string>
+    <string name="mis_tareas_subtitulo_avance05">Tus tareas, trabajos y evaluaciones ahora se guardan localmente con SQLite</string>
     <string name="tarea_ejemplo_1">Informe de Arquitectura</string>
     <string name="fecha_ejemplo_1">Fecha: 23/09/2026</string>
     <string name="prioridad_ejemplo_alta">Prioridad: Alta</string>
@@ -56,7 +56,7 @@
     <string name="toast_tarea_completada">Tarea marcada como completada</string>
     <string name="agregar_tarea_mas">+ Agregar tarea</string>
     <string name="sin_tareas">Aún no hay actividades registradas.</string>
-    <string name="nota_memoria_temporal">En este avance las actividades se guardan temporalmente mientras la app está abierta. La persistencia permanente se puede incorporar más adelante.</string>
+    <string name="nota_memoria_temporal">En este avance las actividades se guardan localmente en SQLite y permanecen aunque cierres la aplicación.</string>
 
     <string name="agregar_tarea_subtitulo">Registra una actividad universitaria de forma sencilla</string>
     <string name="titulo_tarea">Título de la actividad</string>
@@ -73,8 +73,10 @@
     <string name="guardar_tarea">Guardar actividad</string>
     <string name="error_titulo_tarea">Ingrese el título de la actividad</string>
     <string name="error_fecha_tarea">Ingrese una fecha de entrega</string>
-    <string name="error_formato_fecha">Use el formato DD/MM/AAAA</string>
-    <string name="toast_tarea_agregada">Actividad agregada correctamente</string>
+    <string name="error_formato_fecha">Ingrese una fecha válida en formato DD/MM/AAAA</string>
+    <string name="toast_tarea_agregada">Actividad guardada correctamente en SQLite</string>
+    <string name="toast_error_guardar_tarea">No se pudo guardar la actividad</string>
+    <string name="toast_error_actualizar_tarea">No se pudo actualizar el estado</string>
     <string name="formato_tipo">Tipo: %1$s</string>
     <string name="formato_fecha">Fecha: %1$s</string>
     <string name="formato_entrega">Entrega: %1$s</string>

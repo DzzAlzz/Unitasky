@@ -20,6 +20,7 @@ public class ProximasEntregasActivity extends Activity {
 
     private LinearLayout contenedorEntregas;
     private TextView txtSinEntregas;
+    private TareaRepository tareaRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,16 +31,16 @@ public class ProximasEntregasActivity extends Activity {
         txtSinEntregas = findViewById(R.id.txtSinEntregas);
         Button btnVolver = findViewById(R.id.btnVolver);
 
-        btnVolver.setOnClickListener(v -> finish());
+        tareaRepository = new TareaRepository(this);
 
-        TareaRepository.inicializarEjemplos();
+        btnVolver.setOnClickListener(v -> finish());
         mostrarProximasEntregas();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (contenedorEntregas != null) {
+        if (contenedorEntregas != null && tareaRepository != null) {
             mostrarProximasEntregas();
         }
     }
@@ -48,7 +49,7 @@ public class ProximasEntregasActivity extends Activity {
         contenedorEntregas.removeAllViews();
 
         List<Tarea> pendientes = new ArrayList<>();
-        for (Tarea tarea : TareaRepository.obtenerTareas()) {
+        for (Tarea tarea : tareaRepository.obtenerTareas()) {
             if (!getString(R.string.estado_completada).equals(tarea.getEstado())) {
                 pendientes.add(tarea);
             }
@@ -91,5 +92,13 @@ public class ProximasEntregasActivity extends Activity {
         } catch (ParseException e) {
             return new Date(Long.MAX_VALUE);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (tareaRepository != null) {
+            tareaRepository.cerrar();
+        }
+        super.onDestroy();
     }
 }

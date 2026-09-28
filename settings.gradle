@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = 'UniTasky_Avance06'
+rootProject.name = 'UniTasky_Avance07'
 include ':app'
