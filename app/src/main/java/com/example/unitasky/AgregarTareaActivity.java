@@ -33,7 +33,10 @@ public class AgregarTareaActivity extends Activity {
         spinnerTipo = findViewById(R.id.spinnerTipoActividad);
         spinnerPrioridad = findViewById(R.id.spinnerPrioridad);
         spinnerEstado = findViewById(R.id.spinnerEstado);
+        Button btnVolver = findViewById(R.id.btnVolver);
         Button btnGuardar = findViewById(R.id.btnGuardarTarea);
+
+        btnVolver.setOnClickListener(v -> finish());
 
         configurarSpinner(spinnerTipo, R.array.tipos_actividad);
         configurarSpinner(spinnerPrioridad, R.array.prioridades);
@@ -95,6 +98,7 @@ public class AgregarTareaActivity extends Activity {
         Toast.makeText(this, R.string.toast_tarea_agregada, Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(AgregarTareaActivity.this, MisTareasActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
         finish();
     }

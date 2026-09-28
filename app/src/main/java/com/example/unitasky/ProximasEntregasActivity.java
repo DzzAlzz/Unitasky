@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,6 +28,9 @@ public class ProximasEntregasActivity extends Activity {
 
         contenedorEntregas = findViewById(R.id.contenedorEntregas);
         txtSinEntregas = findViewById(R.id.txtSinEntregas);
+        Button btnVolver = findViewById(R.id.btnVolver);
+
+        btnVolver.setOnClickListener(v -> finish());
 
         TareaRepository.inicializarEjemplos();
         mostrarProximasEntregas();

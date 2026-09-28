@@ -22,7 +22,10 @@ public class MisTareasActivity extends Activity {
 
         contenedorTareas = findViewById(R.id.contenedorTareas);
         txtSinTareas = findViewById(R.id.txtSinTareas);
+        Button btnVolver = findViewById(R.id.btnVolver);
         Button btnAgregarTarea = findViewById(R.id.btnAgregarDesdeLista);
+
+        btnVolver.setOnClickListener(v -> finish());
 
         TareaRepository.inicializarEjemplos();
         mostrarTareas();

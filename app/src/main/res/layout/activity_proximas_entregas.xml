@@ -14,6 +14,20 @@
         android:paddingEnd="24dp"
         android:paddingBottom="32dp">
 
+        <Button
+            android:id="@+id/btnVolver"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_boton_azul"
+            android:backgroundTint="@color/azul_principal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/volver"
+            android:textAllCaps="false"
+            android:textColor="@color/texto_sobre_azul"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

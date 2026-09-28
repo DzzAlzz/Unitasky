@@ -26,7 +26,9 @@
     <string name="agregar_tarea">Agregar tarea</string>
     <string name="proximas_entregas">Próximas entregas</string>
     <string name="accesos_rapidos">Tus accesos rápidos</string>
-    <string name="inicio_nota">Avance 05 · Tipos de actividad y lista temporal</string>
+    <string name="inicio_nota">Avance 06 · Navegación y retorno entre pantallas</string>
+
+    <string name="volver">← Volver</string>
 
     <string name="error_correo_vacio">Ingrese su correo</string>
     <string name="error_correo_invalido">Correo no válido</string>
