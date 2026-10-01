@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo_principal"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="22dp"
+        android:paddingTop="28dp"
+        android:paddingEnd="22dp"
+        android:paddingBottom="32dp">
+
+        <Button
+            android:id="@+id/btnVolver"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_boton_azul"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/volver"
+            android:textAllCaps="false"
+            android:textColor="@color/texto_sobre_azul"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_seccion_clara"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/proximas_entregas"
+                android:textColor="@color/azul_oscuro"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/proximas_entregas_subtitulo"
+                android:textColor="@color/texto_secundario"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtSinEntregas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_card"
+            android:gravity="center"
+            android:padding="22dp"
+            android:text="@string/sin_entregas_pendientes"
+            android:textColor="@color/texto_secundario"
+            android:textSize="15sp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/contenedorEntregas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:orientation="vertical" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_card"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="@string/proximas_entregas_nota_avance05"
+            android:textColor="@color/texto_secundario"
+            android:textSize="12sp" />
+    </LinearLayout>
+</ScrollView>
