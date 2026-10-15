@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UniTasky</string>
+    <string name="mensaje_inicio">Organiza tus tareas académicas</string>
+    <string name="comenzar">Comenzar</string>
+    <string name="portada_etiqueta">Tu agenda universitaria</string>
+    <string name="portada_titulo">Organiza tu semana sin complicarte</string>
+    <string name="portada_descripcion">Tareas, fechas y prioridades en un solo lugar.</string>
+    <string name="inicio_seccion_titulo">¿Qué quieres hacer hoy?</string>
+    <string name="formulario_indicacion">Completa los datos principales de tu actividad</string>
+    <string name="login_bienvenida">Organiza tus tareas y alcanza tus metas</string>
+    <string name="correo_electronico">Correo electrónico</string>
+    <string name="correo_hint">correo@ejemplo.com</string>
+    <string name="contrasena">Contraseña</string>
+    <string name="password_hint">Mínimo 6 caracteres</string>
+    <string name="mostrar_contrasena">Mostrar contraseña</string>
+    <string name="ocultar_contrasena">Ocultar contraseña</string>
+    <string name="olvidaste_contrasena">¿Olvidaste tu contraseña?</string>
+    <string name="iniciar_sesion">Iniciar sesión</string>
+    <string name="no_tienes_cuenta">¿No tienes cuenta? Regístrate</string>
+    <string name="crear_cuenta">Crear cuenta</string>
+    <string name="registro_subtitulo">Crea tu perfil para comenzar a organizarte</string>
+    <string name="nombre_completo">Nombre completo</string>
+    <string name="nombre_hint">Nombre y apellido</string>
+    <string name="confirmar_contrasena">Confirmar contraseña</string>
+    <string name="confirmar_password_hint">Repite tu contraseña</string>
+    <string name="ya_tienes_cuenta">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="bienvenido_unitasky">Bienvenido a UniTasky</string>
+    <string name="inicio_subtitulo">Organiza tus actividades universitarias</string>
+    <string name="mis_tareas">Mis tareas</string>
+    <string name="agregar_tarea">Agregar tarea</string>
+    <string name="proximas_entregas">Próximas entregas</string>
+    <string name="accesos_rapidos">Tus accesos rápidos</string>
+    <string name="resumen_academico">Resumen académico</string>
+    <string name="resumen_academico_subtitulo">Datos actualizados desde tus tareas y asignaturas guardadas</string>
+    <string name="resumen_pendientes">Pendientes</string>
+    <string name="resumen_completadas">Completadas</string>
+    <string name="resumen_asignaturas">Asignaturas</string>
+    <string name="proxima_entrega_inicio">Próxima entrega</string>
+    <string name="sin_entregas_inicio">No tienes entregas pendientes.</string>
+    <string name="inicio_nota">Avance 19 · Modo Enfoque con activación estable por proximidad</string>
+
+    <string name="volver">← Volver</string>
+
+    <string name="error_correo_vacio">Ingresa tu correo</string>
+    <string name="error_correo_invalido">Ingresa un correo válido</string>
+    <string name="error_password_vacio">Ingresa tu contraseña</string>
+    <string name="error_password_corta">Mínimo 6 caracteres</string>
+    <string name="error_nombre_vacio">Ingrese su nombre</string>
+    <string name="error_confirmar_password">Confirme su contraseña</string>
+    <string name="error_password_distinta">Las contraseñas no coinciden</string>
+    <string name="toast_login_correcto">Inicio de sesión correcto</string>
+    <string name="toast_cuenta_creada">Cuenta creada correctamente</string>
+    <string name="toast_proximos_avances">Función disponible en próximos avances</string>
+    <string name="toast_recuperacion">Recuperación disponible en próximos avances</string>
+    <string name="logo_description">Logo de UniTasky</string>
+
+    <string name="mis_tareas_subtitulo">Revisa y organiza tus actividades pendientes</string>
+    <string name="mis_tareas_subtitulo_avance08">Tus tareas guardadas se consultan directamente desde SQLite</string>
+    <string name="mis_tareas_subtitulo_avance09">Consulta, edita o elimina tus tareas guardadas en SQLite</string>
+    <string name="mis_tareas_subtitulo_avance10">Tus actividades organizadas y guardadas de forma local</string>
+    <string name="mis_tareas_subtitulo_avance11">Filtra y ordena tus actividades consultando SQLite</string>
+    <string name="tarea_ejemplo_1">Informe de Arquitectura</string>
+    <string name="fecha_ejemplo_1">Fecha: 23/09/2026</string>
+    <string name="prioridad_ejemplo_alta">Prioridad: Alta</string>
+    <string name="tarea_ejemplo_2">Actividad de Inglés</string>
+    <string name="fecha_ejemplo_2">Fecha: 25/09/2026</string>
+    <string name="prioridad_ejemplo_media">Prioridad: Media</string>
+    <string name="estado_ejemplo_pendiente">Estado: Pendiente</string>
+    <string name="marcar_completada">Marcar como completada</string>
+    <string name="toast_tarea_completada">Tarea completada correctamente</string>
+    <string name="agregar_tarea_mas">+ Agregar tarea</string>
+    <string name="sin_tareas">No tienes tareas registradas.</string>
+    <string name="sin_tareas_filtro">No hay tareas que coincidan con este filtro.</string>
+    <string name="organizar_lista">Organizar lista</string>
+    <string name="filtrar_por">Filtrar por</string>
+    <string name="ordenar_por">Ordenar por</string>
+    <string name="nota_consultas_sqlite">Los filtros y el orden se aplican directamente sobre las tareas guardadas en SQLite.</string>
+    <string name="nota_memoria_temporal">Tus cambios se guardan automáticamente en SQLite.</string>
+
+    <string name="agregar_tarea_subtitulo">Registra una actividad universitaria de forma sencilla</string>
+    <string name="titulo_tarea">Título de la actividad</string>
+    <string name="titulo_tarea_hint">Ej: Informe de Arquitectura</string>
+    <string name="descripcion_tarea">Descripción</string>
+    <string name="descripcion_tarea_hint">Detalle opcional de la actividad</string>
+    <string name="tipo_actividad">Tipo de actividad</string>
+    <string name="fecha_entrega">Fecha de entrega</string>
+    <string name="fecha_hint">DD/MM/AAAA</string>
+    <string name="prioridad">Prioridad</string>
+    <string name="estado_tarea">Estado</string>
+    <string name="estado_pendiente">Pendiente</string>
+    <string name="estado_completada">Completada</string>
+    <string name="guardar_tarea">Guardar actividad</string>
+    <string name="error_titulo_tarea">Ingrese el título de la actividad</string>
+    <string name="error_fecha_tarea">Ingrese una fecha de entrega</string>
+    <string name="error_formato_fecha">Ingrese una fecha válida en formato DD/MM/AAAA</string>
+    <string name="toast_tarea_agregada">Tarea agregada correctamente</string>
+    <string name="toast_error_guardar_tarea">No se pudo guardar la actividad</string>
+    <string name="toast_error_actualizar_tarea">No se pudo actualizar el estado</string>
+    <string name="formato_tipo">Tipo: %1$s</string>
+    <string name="formato_fecha">Fecha: %1$s</string>
+    <string name="formato_entrega">Entrega: %1$s</string>
+    <string name="formato_prioridad">Prioridad: %1$s</string>
+    <string name="formato_estado">Estado: %1$s</string>
+
+    <string name="editar">Editar</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="editar_tarea">Editar tarea</string>
+    <string name="editar_tarea_subtitulo">Modifica los datos de la actividad seleccionada</string>
+    <string name="guardar_cambios">Guardar cambios</string>
+    <string name="eliminar_tarea">Eliminar tarea</string>
+    <string name="confirmar_eliminar_tarea">¿Estás seguro de que deseas eliminar esta tarea?</string>
+    <string name="toast_tarea_editada">Tarea actualizada correctamente</string>
+    <string name="toast_error_editar_tarea">No se pudo actualizar la actividad</string>
+    <string name="toast_tarea_eliminada">Tarea eliminada correctamente</string>
+    <string name="toast_error_eliminar_tarea">No se pudo eliminar la actividad</string>
+    <string name="toast_tarea_no_encontrada">No se encontró la actividad seleccionada</string>
+
+    <string name="proximas_entregas_subtitulo">Revisa las actividades pendientes ordenadas por fecha</string>
+    <string name="proximas_entregas_subtitulo_avance11">Pendientes consultadas desde SQLite y ordenadas por fecha</string>
+    <string name="proximas_entregas_subtitulo_avance05">Actividades pendientes ordenadas por su fecha de entrega</string>
+    <string name="proxima_tarea_1">Informe de Arquitectura</string>
+    <string name="proxima_fecha_1">Entrega: 23/09/2026</string>
+    <string name="proxima_tarea_2">Actividad de Inglés</string>
+    <string name="proxima_fecha_2">Entrega: 25/09/2026</string>
+    <string name="proximas_entregas_nota">Los recordatorios y notificaciones se agregarán en avances posteriores.</string>
+    <string name="proximas_entregas_nota_avance05">Solo se muestran actividades pendientes. Las notificaciones y recordatorios permanentes quedan para avances posteriores.</string>
+    <string name="proximas_entregas_nota_avance11">Esta lista se obtiene directamente desde SQLite: solo tareas pendientes y ordenadas desde la fecha más próxima.</string>
+    <string name="sin_entregas_pendientes">No tienes próximas entregas.</string>
+
+    <string-array name="tipos_actividad">
+        <item>Tarea</item>
+        <item>Trabajo</item>
+        <item>Evaluación</item>
+    </string-array>
+
+    <string-array name="prioridades">
+        <item>Baja</item>
+        <item>Media</item>
+        <item>Alta</item>
+    </string-array>
+
+    <string-array name="estados_tarea">
+        <item>Pendiente</item>
+        <item>Completada</item>
+    </string-array>
+
+    <string-array name="filtros_tareas">
+        <item>Todas</item>
+        <item>Pendientes</item>
+        <item>Completadas</item>
+        <item>Prioridad alta</item>
+        <item>Prioridad media</item>
+        <item>Prioridad baja</item>
+    </string-array>
+
+    <string-array name="orden_tareas">
+        <item>Más recientes</item>
+        <item>Fecha de entrega</item>
+        <item>Prioridad</item>
+    </string-array>
+
+    <string name="mis_asignaturas">Mis asignaturas</string>
+    <string name="mis_asignaturas_subtitulo">Organiza las asignaturas que utilizas en tus actividades</string>
+    <string name="mis_asignaturas_subtitulo_avance14">Crea, edita o elimina asignaturas sin perder tus tareas asociadas</string>
+    <string name="agregar_asignatura">Agregar asignatura</string>
+    <string name="agregar_asignatura_subtitulo">Registra una asignatura para relacionarla con tus tareas</string>
+    <string name="nombre_asignatura">Nombre de la asignatura</string>
+    <string name="nombre_asignatura_hint">Ej: Programación Android</string>
+    <string name="guardar_asignatura">Guardar asignatura</string>
+    <string name="sin_asignaturas">No tienes asignaturas registradas.</string>
+    <string name="sin_asignatura">Sin asignatura</string>
+    <string name="asignatura">Asignatura</string>
+    <string name="formato_asignatura">Asignatura: %1$s</string>
+    <string name="error_nombre_asignatura">Ingresa el nombre de la asignatura</string>
+    <string name="error_asignatura_duplicada">La asignatura ya existe</string>
+    <string name="toast_asignatura_agregada">Asignatura agregada correctamente</string>
+    <string name="toast_error_guardar_asignatura">No se pudo guardar la asignatura</string>
+    <string name="editar_asignatura">Editar asignatura</string>
+    <string name="editar_asignatura_subtitulo">Modifica el nombre de la asignatura seleccionada</string>
+    <string name="eliminar_asignatura">Eliminar asignatura</string>
+    <string name="confirmar_eliminar_asignatura">¿Estás seguro de que deseas eliminar esta asignatura?</string>
+    <string name="toast_asignatura_actualizada">Asignatura actualizada correctamente</string>
+    <string name="toast_asignatura_eliminada">Asignatura eliminada correctamente</string>
+    <string name="toast_error_editar_asignatura">No se pudo actualizar la asignatura</string>
+    <string name="toast_error_eliminar_asignatura">No se pudo eliminar la asignatura</string>
+    <string name="toast_asignatura_no_encontrada">No se encontró la asignatura seleccionada</string>
+    <string name="mis_tareas_subtitulo_avance12">Tus tareas ahora pueden relacionarse con una asignatura</string>
+    <string name="mis_tareas_subtitulo_avance13">Busca y filtra tus tareas por asignatura directamente desde SQLite</string>
+    <string name="buscar_por_titulo">Buscar por título</string>
+    <string name="buscar_tarea_hint">Buscar tarea...</string>
+    <string name="filtrar_asignatura">Filtrar por asignatura</string>
+    <string name="todas_asignaturas">Todas las asignaturas</string>
+    <string name="no_se_encontraron_tareas">No se encontraron tareas.</string>
+    <string name="nota_consultas_sqlite_avance13">La búsqueda, los filtros y el orden se combinan directamente sobre las tareas guardadas en SQLite.</string>
+    <string name="proximas_entregas_subtitulo_avance12">Pendientes ordenadas por fecha con su asignatura</string>
+    <string name="proximas_entregas_nota_avance12">Las próximas entregas se consultan desde SQLite y muestran la asignatura asociada cuando existe.</string>
+
+    <string name="error_credenciales">Correo o contraseña incorrectos</string>
+    <string name="error_correo_registrado">Este correo ya está registrado</string>
+    <string name="toast_usuario_registrado">Usuario registrado correctamente</string>
+    <string name="toast_error_registrar_usuario">No se pudo registrar el usuario</string>
+    <string name="sesion_actual">Sesión actual</string>
+    <string name="formato_usuario_sesion">Sesión iniciada como: %1$s</string>
+    <string name="formato_usuario_sesion_nombre">Hola, %1$s · %2$s</string>
+    <string name="cerrar_sesion">Cerrar sesión</string>
+    <string name="confirmar_cerrar_sesion">¿Deseas cerrar sesión?</string>
+    <string name="nota_usuarios_avance16">Tus tareas, asignaturas y resumen pertenecen únicamente al usuario que tiene la sesión iniciada.</string>
+
+    <string name="probar_modo_enfoque">Probar modo enfoque</string>
+    <string name="modo_enfoque_titulo">Modo Enfoque</string>
+    <string name="modo_enfoque_subtitulo">Prueba básica del sensor de proximidad</string>
+    <string name="modo_enfoque_explicacion">Acerca la mano a la parte superior del teléfono para comprobar si el sensor detecta cercanía.</string>
+    <string name="sensor_estado_titulo">Estado del sensor</string>
+    <string name="sensor_listo">Sensor listo</string>
+    <string name="sensor_libre">Sensor libre</string>
+    <string name="sensor_cubierto">Sensor cubierto</string>
+    <string name="sensor_no_disponible">Este dispositivo no dispone de sensor de proximidad.</string>
+    <string name="modo_enfoque_nota">En este avance el sensor solo detecta cerca o lejos. Todavía no inicia temporizadores ni modifica tareas.</string>
+
+
+    <string name="modo_enfoque_subtitulo_avance18">Selecciona una tarea pendiente y usa el sensor para iniciar o pausar una sesión temporal.</string>
+    <string name="modo_enfoque_seleccion_titulo">Selecciona una tarea pendiente</string>
+    <string name="modo_enfoque_selecciona_tarea">Selecciona una tarea</string>
+    <string name="modo_enfoque_sin_tareas_pendientes">No tienes tareas pendientes.</string>
+    <string name="modo_enfoque_sin_tarea_seleccionada">Ninguna tarea seleccionada</string>
+    <string name="modo_enfoque_tarea_actual">Tarea actual: %1$s</string>
+    <string name="modo_enfoque_tarea_con_asignatura">%1$s · %2$s</string>
+    <string name="modo_enfoque_tiempo_titulo">Tiempo de enfoque</string>
+    <string name="modo_enfoque_activo">Modo enfoque activo</string>
+    <string name="modo_enfoque_pausado">Modo enfoque pausado</string>
+    <string name="modo_enfoque_selecciona_antes">Selecciona una tarea antes de iniciar el modo enfoque.</string>
+    <string name="modo_enfoque_reiniciar">Reiniciar sesión</string>
+    <string name="modo_enfoque_nota_avance18">En este avance el tiempo solo existe mientras usas esta pantalla. Todavía no se guarda en SQLite ni modifica la tarea.</string>
+    <string name="modo_enfoque_subtitulo_avance19">Selecciona una tarea y mantén cubierto el sensor 1,5 segundos para iniciar o reanudar.</string>
+    <string name="modo_enfoque_preparando">Preparando modo enfoque...</string>
+    <string name="modo_enfoque_nota_avance19">Avance 19: el sensor debe permanecer cubierto aproximadamente 1,5 segundos antes de iniciar. El tiempo sigue siendo temporal y no se guarda en SQLite.</string>
+    <string name="modo_enfoque_subtitulo_avance20">Selecciona una tarea, registra tiempo de enfoque y guarda la sesión en SQLite.</string>
+    <string name="modo_enfoque_guardar_sesion">Guardar sesión</string>
+    <string name="modo_enfoque_guardar_sin_tarea">Selecciona una tarea antes de guardar la sesión.</string>
+    <string name="modo_enfoque_guardar_sin_tiempo">Realiza al menos 1 segundo de enfoque antes de guardar.</string>
+    <string name="modo_enfoque_sesion_guardada">Sesión de enfoque guardada correctamente</string>
+    <string name="modo_enfoque_error_guardar_sesion">No se pudo guardar la sesión de enfoque.</string>
+    <string name="modo_enfoque_nota_avance20">Avance 20: las sesiones válidas se guardan en SQLite asociadas al ID real de la tarea. El historial se realizará en un avance posterior.</string>
+    <string name="modo_enfoque_subtitulo_avance21">Registra sesiones y consulta el historial de la tarea seleccionada.</string>
+    <string name="modo_enfoque_nota_avance21">Avance 21: las sesiones se guardan en SQLite y el historial muestra únicamente las correspondientes a la tarea seleccionada.</string>
+
+    <string name="historial_enfoque_ver">Ver historial de enfoque</string>
+    <string name="historial_enfoque_titulo">Historial de enfoque</string>
+    <string name="historial_enfoque_selecciona_tarea">Selecciona una tarea para ver su historial.</string>
+    <string name="historial_enfoque_tarea_formato">Tarea: %1$s</string>
+    <string name="historial_enfoque_tarea_sin_nombre">Tarea seleccionada</string>
+    <string name="historial_enfoque_tarea_no_valida">No se pudo cargar la tarea seleccionada.</string>
+    <string name="historial_enfoque_vacio">No hay sesiones de enfoque guardadas para esta tarea.</string>
+    <string name="historial_enfoque_duracion_formato">Duración: %1$s</string>
+    <string name="historial_enfoque_nota_avance21">Avance 21: el historial muestra únicamente las sesiones guardadas de la tarea seleccionada, ordenadas desde la más reciente.</string>
+
+    <string name="historial_enfoque_total_titulo">Tiempo total de enfoque</string>
+    <string name="historial_enfoque_total_inicial">00:00</string>
+    <string name="historial_enfoque_total_formato">%1$s</string>
+    <string name="historial_enfoque_nota_avance22">Avance 22: el historial mantiene las sesiones por tarea y ahora suma automáticamente el tiempo total de enfoque acumulado.</string>
+
+    <string name="resumen_enfoque_titulo">Modo Enfoque</string>
+    <string name="resumen_enfoque_total_titulo">Tiempo total de enfoque</string>
+    <string name="resumen_enfoque_total_inicial">00:00</string>
+    <string name="resumen_enfoque_ultima_titulo">Última sesión</string>
+    <string name="resumen_enfoque_sin_sesiones">Aún no hay sesiones de enfoque.</string>
+    <string name="resumen_enfoque_ultima_detalle">%1$s · %2$s</string>
+    <string name="resumen_enfoque_nota_avance23">Avance 23: el dashboard resume el tiempo total de enfoque y la última sesión del usuario actual.</string>
+</resources>
