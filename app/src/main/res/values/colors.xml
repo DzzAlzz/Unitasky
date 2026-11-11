@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="fondo_principal">#F5F8FC</color>
+    <color name="blanco">#FFFFFF</color>
+
+    <color name="azul_principal">#2457A6</color>
+    <color name="azul_oscuro">#183A70</color>
+    <color name="azul_claro">#EAF1FC</color>
+    <color name="azul_borde">#B9CCEA</color>
+
+    <color name="amarillo_principal">#F4C542</color>
+    <color name="amarillo_oscuro">#A97C00</color>
+    <color name="amarillo_claro">#FFF7DA</color>
+
+    <color name="verde_exito">#198754</color>
+
+    <color name="texto_principal">#1F2937</color>
+    <color name="texto_secundario">#667085</color>
+    <color name="texto_sobre_azul">#FFFFFF</color>
+    <color name="texto_boton_amarillo">#183A70</color>
+    <color name="borde_suave">#DCE4EF</color>
+</resources>
