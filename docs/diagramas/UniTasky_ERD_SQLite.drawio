@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" agent="ChatGPT" version="24.7.17" type="device">
+  <diagram id="erd-sqlite-–-unitasky" name="ERD SQLite – UniTasky">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="&lt;b&gt;Modelo Entidad-Relación SQLite – UniTasky&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4472C4;strokeWidth=2;fontFamily=Arial;fontSize=18;fontStyle=1;fontColor=#2F5597;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="560" y="20" width="760" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="usuarios" value="&lt;b&gt;USUARIOS&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;PK&lt;/b&gt; id : INTEGER AUTOINCREMENT&lt;br&gt;nombre : TEXT NOT NULL&lt;br&gt;correo : TEXT NOT NULL COLLATE NOCASE UNIQUE&lt;br&gt;password : TEXT NOT NULL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAF2FF;strokeColor=#5B9BD5;strokeWidth=2;fontFamily=Arial;fontSize=12;fontColor=#1F1F1F;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="70" y="170" width="330" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="asignaturas" value="&lt;b&gt;ASIGNATURAS&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;PK&lt;/b&gt; id : INTEGER AUTOINCREMENT&lt;br&gt;nombre : TEXT NOT NULL&lt;br&gt;usuario_id : INTEGER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAF2FF;strokeColor=#5B9BD5;strokeWidth=2;fontFamily=Arial;fontSize=12;fontColor=#1F1F1F;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="500" y="170" width="330" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="tareas" value="&lt;b&gt;TAREAS&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;PK&lt;/b&gt; id : INTEGER AUTOINCREMENT&lt;br&gt;titulo : TEXT NOT NULL&lt;br&gt;descripcion : TEXT&lt;br&gt;tipo : TEXT NOT NULL&lt;br&gt;fecha : TEXT NOT NULL&lt;br&gt;prioridad : TEXT NOT NULL&lt;br&gt;estado : TEXT NOT NULL&lt;br&gt;asignatura_id : INTEGER&lt;br&gt;usuario_id : INTEGER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAF2FF;strokeColor=#5B9BD5;strokeWidth=2;fontFamily=Arial;fontSize=12;fontColor=#1F1F1F;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="930" y="120" width="380" height="350" as="geometry" />
+        </mxCell>
+        <mxCell id="sesiones" value="&lt;b&gt;SESIONES_ENFOQUE&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;PK&lt;/b&gt; id : INTEGER AUTOINCREMENT&lt;br&gt;tarea_id : INTEGER NOT NULL&lt;br&gt;fecha : TEXT NOT NULL&lt;br&gt;duracion_segundos : INTEGER NOT NULL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAF2FF;strokeColor=#5B9BD5;strokeWidth=2;fontFamily=Arial;fontSize=12;fontColor=#1F1F1F;align=left;verticalAlign=top;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="170" width="360" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="&lt;b&gt;Relaciones lógicas del código&lt;/b&gt;&lt;br&gt;usuarios 1:N asignaturas por usuario_id&lt;br&gt;usuarios 1:N tareas por usuario_id&lt;br&gt;asignaturas 1:N tareas por asignatura_id&lt;br&gt;tareas 1:N sesiones_enfoque por tarea_id&lt;br&gt;&lt;br&gt;Los CREATE TABLE actuales no declaran restricciones FOREIGN KEY; las líneas se muestran discontinuas para diferenciarlas de constraints físicas." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontFamily=Arial;fontSize=11;fontColor=#333333;align=left;verticalAlign=top;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="470" y="590" width="960" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="r1" value="1 : N · usuario_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 4;endArrow=block;endFill=0;strokeColor=#5B9BD5;strokeWidth=1.5;fontFamily=Arial;fontSize=10;fontColor=#2F5597;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.45;entryX=0;entryY=0.45;" edge="1" parent="1" source="usuarios" target="asignaturas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r2" value="1 : N · asignatura_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 4;endArrow=block;endFill=0;strokeColor=#5B9BD5;strokeWidth=1.5;fontFamily=Arial;fontSize=10;fontColor=#2F5597;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.55;entryX=0;entryY=0.55;" edge="1" parent="1" source="asignaturas" target="tareas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r3" value="1 : N · tarea_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 4;endArrow=block;endFill=0;strokeColor=#5B9BD5;strokeWidth=1.5;fontFamily=Arial;fontSize=10;fontColor=#2F5597;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.45;entryX=0;entryY=0.45;" edge="1" parent="1" source="tareas" target="sesiones">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r4" value="1 : N · usuario_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;dashPattern=6 4;endArrow=block;endFill=0;strokeColor=#5B9BD5;strokeWidth=1.5;fontFamily=Arial;fontSize=10;fontColor=#2F5597;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="usuarios" target="tareas">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="235" y="95" />
+              <mxPoint x="1120" y="95" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
