@@ -1,28 +1,40 @@
 package com.example.unitasky;
 
+import com.example.unitasky.adapter.TareaAdapter;
+import com.example.unitasky.database.DatabaseHelper;
+import com.example.unitasky.model.Asignatura;
+import com.example.unitasky.model.Tarea;
+import com.example.unitasky.repository.TareaRepository;
+import com.example.unitasky.util.FeedbackHelper;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Pantalla que muestra, busca, filtra y administra las tareas del usuario mediante RecyclerView.
+ */
 public class MisTareasActivity extends Activity {
 
-    private LinearLayout contenedorTareas;
+    private RecyclerView recyclerTareas;
+    private TareaAdapter tareaAdapter;
     private TextView txtSinTareas;
     private EditText edtBuscarTarea;
     private Spinner spinnerFiltro;
@@ -36,7 +48,7 @@ public class MisTareasActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mis_tareas);
 
-        contenedorTareas = findViewById(R.id.contenedorTareas);
+        recyclerTareas = findViewById(R.id.recyclerTareas);
         txtSinTareas = findViewById(R.id.txtSinTareas);
         edtBuscarTarea = findViewById(R.id.edtBuscarTarea);
         spinnerFiltro = findViewById(R.id.spinnerFiltroTareas);
@@ -46,6 +58,7 @@ public class MisTareasActivity extends Activity {
         Button btnAgregarTarea = findViewById(R.id.btnAgregarDesdeLista);
 
         tareaRepository = new TareaRepository(this);
+        configurarRecyclerView();
 
         btnVolver.setOnClickListener(v -> finish());
         btnAgregarTarea.setOnClickListener(v -> {
@@ -55,11 +68,32 @@ public class MisTareasActivity extends Activity {
 
         configurarSpinner(spinnerFiltro, R.array.filtros_tareas);
         configurarSpinner(spinnerOrden, R.array.orden_tareas);
-        cargarFiltroAsignaturas();
         configurarCambiosDeConsulta();
         configurarBusqueda();
+    }
 
-        mostrarTareas();
+    private void configurarRecyclerView() {
+        recyclerTareas.setLayoutManager(new LinearLayoutManager(this));
+        recyclerTareas.setHasFixedSize(false);
+
+        tareaAdapter = new TareaAdapter(new TareaAdapter.AccionesTareaListener() {
+            @Override
+            public void onEditar(Tarea tarea) {
+                abrirEdicion(tarea);
+            }
+
+            @Override
+            public void onEliminar(Tarea tarea) {
+                confirmarEliminacion(tarea);
+            }
+
+            @Override
+            public void onCompletar(Tarea tarea) {
+                completarTarea(tarea);
+            }
+        });
+
+        recyclerTareas.setAdapter(tareaAdapter);
     }
 
     private void configurarSpinner(Spinner spinner, int recursoArray) {
@@ -73,22 +107,36 @@ public class MisTareasActivity extends Activity {
     }
 
     private void cargarFiltroAsignaturas() {
-        asignaturas = tareaRepository.obtenerAsignaturas();
-        List<String> opciones = new ArrayList<>();
-        opciones.add(getString(R.string.todas_asignaturas));
-        opciones.add(getString(R.string.sin_asignatura));
+        long asignaturaSeleccionadaId = obtenerAsignaturaFiltroSeleccionadaId();
+        boolean soloSinAsignatura = spinnerAsignatura != null
+                && spinnerAsignatura.getSelectedItemPosition() == 1;
 
-        for (Asignatura asignatura : asignaturas) {
-            opciones.add(asignatura.getNombre());
-        }
+        tareaRepository.obtenerAsignaturasAsync(resultado ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                opciones
+                    asignaturas = resultado;
+                    List<String> opciones = new ArrayList<>();
+                    opciones.add(getString(R.string.todas_asignaturas));
+                    opciones.add(getString(R.string.sin_asignatura));
+
+                    for (Asignatura asignatura : asignaturas) {
+                        opciones.add(asignatura.getNombre());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            this,
+                            android.R.layout.simple_spinner_item,
+                            opciones
+                    );
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerAsignatura.setAdapter(adapter);
+                    restaurarFiltroAsignatura(asignaturaSeleccionadaId, soloSinAsignatura);
+                    mostrarTareas();
+                })
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerAsignatura.setAdapter(adapter);
     }
 
     private void configurarCambiosDeConsulta() {
@@ -131,13 +179,8 @@ public class MisTareasActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (contenedorTareas != null && tareaRepository != null) {
-            long asignaturaSeleccionadaId = obtenerAsignaturaFiltroSeleccionadaId();
-            boolean soloSinAsignatura = spinnerAsignatura != null
-                    && spinnerAsignatura.getSelectedItemPosition() == 1;
-
+        if (recyclerTareas != null && tareaRepository != null) {
             cargarFiltroAsignaturas();
-            restaurarFiltroAsignatura(asignaturaSeleccionadaId, soloSinAsignatura);
             mostrarTareas();
         }
     }
@@ -182,86 +225,11 @@ public class MisTareasActivity extends Activity {
     }
 
     private void mostrarTareas() {
-        if (contenedorTareas == null || tareaRepository == null || spinnerFiltro == null ||
-                spinnerAsignatura == null || spinnerOrden == null || edtBuscarTarea == null) {
+        if (tareaAdapter == null || tareaRepository == null || spinnerFiltro == null
+                || spinnerAsignatura == null || spinnerOrden == null || edtBuscarTarea == null) {
             return;
         }
 
-        contenedorTareas.removeAllViews();
-        List<Tarea> tareas = obtenerTareasSegunSeleccion();
-
-        if (tareas.isEmpty()) {
-            txtSinTareas.setText(hayFiltrosActivos()
-                    ? R.string.no_se_encontraron_tareas
-                    : R.string.sin_tareas);
-            txtSinTareas.setVisibility(View.VISIBLE);
-            return;
-        }
-
-        txtSinTareas.setVisibility(View.GONE);
-        LayoutInflater inflater = LayoutInflater.from(this);
-
-        for (Tarea tarea : tareas) {
-            View item = inflater.inflate(R.layout.item_tarea, contenedorTareas, false);
-
-            TextView txtTitulo = item.findViewById(R.id.txtItemTitulo);
-            TextView txtDescripcion = item.findViewById(R.id.txtItemDescripcion);
-            TextView txtAsignatura = item.findViewById(R.id.txtItemAsignatura);
-            TextView txtTipo = item.findViewById(R.id.txtItemTipo);
-            TextView txtFecha = item.findViewById(R.id.txtItemFecha);
-            TextView txtPrioridad = item.findViewById(R.id.txtItemPrioridad);
-            TextView txtEstado = item.findViewById(R.id.txtItemEstado);
-            Button btnCompletar = item.findViewById(R.id.btnItemCompletar);
-            Button btnEditar = item.findViewById(R.id.btnItemEditar);
-            Button btnEliminar = item.findViewById(R.id.btnItemEliminar);
-
-            txtTitulo.setText(tarea.getTitulo());
-            String nombreAsignatura = tarea.getAsignaturaNombre() == null || tarea.getAsignaturaNombre().trim().isEmpty()
-                    ? getString(R.string.sin_asignatura)
-                    : tarea.getAsignaturaNombre();
-            txtAsignatura.setText(getString(R.string.formato_asignatura, nombreAsignatura));
-            txtTipo.setText(getString(R.string.formato_tipo, tarea.getTipo()));
-            txtFecha.setText(getString(R.string.formato_fecha, tarea.getFecha()));
-            txtPrioridad.setText(getString(R.string.formato_prioridad, tarea.getPrioridad()));
-            txtEstado.setText(getString(R.string.formato_estado, tarea.getEstado()));
-
-            if (tarea.getDescripcion() == null || tarea.getDescripcion().isEmpty()) {
-                txtDescripcion.setVisibility(View.GONE);
-            } else {
-                txtDescripcion.setVisibility(View.VISIBLE);
-                txtDescripcion.setText(tarea.getDescripcion());
-            }
-
-            btnEditar.setOnClickListener(v -> abrirEdicion(tarea));
-            btnEliminar.setOnClickListener(v -> confirmarEliminacion(tarea));
-
-            if (getString(R.string.estado_completada).equals(tarea.getEstado())) {
-                btnCompletar.setVisibility(View.GONE);
-            } else {
-                btnCompletar.setVisibility(View.VISIBLE);
-                btnCompletar.setOnClickListener(v -> {
-                    String estadoCompletada = getString(R.string.estado_completada);
-                    if (tareaRepository.marcarComoCompletada(tarea, estadoCompletada)) {
-                        FeedbackHelper.mostrarExito(
-                                MisTareasActivity.this,
-                                getString(R.string.toast_tarea_completada)
-                        );
-                        mostrarTareas();
-                    } else {
-                        Toast.makeText(
-                                MisTareasActivity.this,
-                                R.string.toast_error_actualizar_tarea,
-                                Toast.LENGTH_SHORT
-                        ).show();
-                    }
-                });
-            }
-
-            contenedorTareas.addView(item);
-        }
-    }
-
-    private List<Tarea> obtenerTareasSegunSeleccion() {
         String estado = null;
         String prioridad = null;
 
@@ -298,13 +266,35 @@ public class MisTareasActivity extends Activity {
             }
         }
 
-        return tareaRepository.obtenerTareasFiltradas(
-                edtBuscarTarea.getText().toString(),
+        String textoBusqueda = edtBuscarTarea.getText().toString();
+        String criterioOrden = obtenerCriterioOrden();
+        boolean filtrosActivos = hayFiltrosActivos();
+
+        tareaRepository.obtenerTareasFiltradasAsync(
+                textoBusqueda,
                 estado,
                 prioridad,
                 asignaturaId,
                 soloSinAsignatura,
-                obtenerCriterioOrden()
+                criterioOrden,
+                tareas -> runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+
+                    tareaAdapter.actualizarTareas(tareas);
+
+                    if (tareas.isEmpty()) {
+                        txtSinTareas.setText(filtrosActivos
+                                ? R.string.no_se_encontraron_tareas
+                                : R.string.sin_tareas);
+                        txtSinTareas.setVisibility(View.VISIBLE);
+                        recyclerTareas.setVisibility(View.GONE);
+                    } else {
+                        txtSinTareas.setVisibility(View.GONE);
+                        recyclerTareas.setVisibility(View.VISIBLE);
+                    }
+                })
         );
     }
 
@@ -340,13 +330,50 @@ public class MisTareasActivity extends Activity {
                 .show();
     }
 
+    private void completarTarea(Tarea tarea) {
+        String estadoCompletada = getString(R.string.estado_completada);
+        tareaRepository.marcarComoCompletadaAsync(tarea, estadoCompletada, actualizado ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+
+                    if (actualizado) {
+                        FeedbackHelper.mostrarExito(
+                                this,
+                                getString(R.string.toast_tarea_completada)
+                        );
+                        mostrarTareas();
+                    } else {
+                        Toast.makeText(
+                                this,
+                                R.string.toast_error_actualizar_tarea,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                })
+        );
+    }
+
     private void eliminarTarea(Tarea tarea) {
-        if (tareaRepository.eliminarTarea(tarea.getId())) {
-            FeedbackHelper.mostrarExito(this, getString(R.string.toast_tarea_eliminada));
-            mostrarTareas();
-        } else {
-            Toast.makeText(this, R.string.toast_error_eliminar_tarea, Toast.LENGTH_SHORT).show();
-        }
+        tareaRepository.eliminarTareaAsync(tarea.getId(), eliminada ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+
+                    if (eliminada) {
+                        FeedbackHelper.mostrarExito(this, getString(R.string.toast_tarea_eliminada));
+                        mostrarTareas();
+                    } else {
+                        Toast.makeText(
+                                this,
+                                R.string.toast_error_eliminar_tarea,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                })
+        );
     }
 
     @Override

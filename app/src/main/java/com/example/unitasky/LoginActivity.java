@@ -1,57 +1,58 @@
 package com.example.unitasky;
 
+import com.example.unitasky.repository.TareaRepository;
+import com.example.unitasky.util.SessionManager;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Patterns;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * Pantalla de autenticación de usuarios de UniTasky.
+ */
 public class LoginActivity extends Activity {
 
     private EditText edtCorreo;
     private EditText edtPassword;
     private TextView txtMostrarPassword;
+    private Button btnIniciarSesion;
     private boolean passwordVisible = false;
-    private DatabaseHelper databaseHelper;
+    private boolean autenticando = false;
+    private TareaRepository tareaRepository;
     private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        databaseHelper = new DatabaseHelper(this);
-        sessionManager = new SessionManager(this);
-
-        if (sessionManager.haySesionIniciada()) {
-            Usuario usuario = databaseHelper.obtenerUsuarioPorId(sessionManager.getUsuarioId());
-            if (usuario != null) {
-                sessionManager.actualizarDatosUsuario(usuario);
-                abrirInicio();
-                return;
-            }
-            sessionManager.cerrarSesion();
-        }
-
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE
+        );
         setContentView(R.layout.activity_login);
 
         edtCorreo = findViewById(R.id.edtCorreoLogin);
         edtPassword = findViewById(R.id.edtPasswordLogin);
-        Button btnIniciarSesion = findViewById(R.id.btnIniciarSesion);
+        btnIniciarSesion = findViewById(R.id.btnIniciarSesion);
         TextView txtOlvidePassword = findViewById(R.id.txtOlvidePassword);
         TextView txtIrRegistro = findViewById(R.id.txtIrRegistro);
         txtMostrarPassword = findViewById(R.id.txtMostrarPassword);
 
+        tareaRepository = new TareaRepository(this);
+        sessionManager = new SessionManager(this);
+
         btnIniciarSesion.setOnClickListener(v -> validarLogin());
 
-        txtIrRegistro.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, RegistroActivity.class);
-            startActivity(intent);
-        });
+        txtIrRegistro.setOnClickListener(v ->
+                startActivity(new Intent(LoginActivity.this, RegistroActivity.class))
+        );
 
         txtOlvidePassword.setOnClickListener(v ->
                 Toast.makeText(LoginActivity.this,
@@ -59,6 +60,33 @@ public class LoginActivity extends Activity {
                         Toast.LENGTH_SHORT).show());
 
         txtMostrarPassword.setOnClickListener(v -> cambiarVisibilidadPassword());
+
+        validarSesionExistente();
+    }
+
+    private void validarSesionExistente() {
+        if (!sessionManager.haySesionIniciada()) {
+            return;
+        }
+
+        btnIniciarSesion.setEnabled(false);
+        long usuarioId = sessionManager.getUsuarioId();
+
+        tareaRepository.obtenerUsuarioPorIdAsync(usuarioId, usuario ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+
+                    if (usuario != null) {
+                        abrirInicio();
+                        return;
+                    }
+
+                    sessionManager.cerrarSesion();
+                    btnIniciarSesion.setEnabled(true);
+                })
+        );
     }
 
     private void validarLogin() {
@@ -86,18 +114,34 @@ public class LoginActivity extends Activity {
             return;
         }
 
-        Usuario usuario = databaseHelper.validarUsuario(correo, password);
-        if (usuario == null) {
-            edtPassword.setError(getString(R.string.error_credenciales));
-            edtPassword.setText("");
-            edtPassword.requestFocus();
+        if (autenticando) {
             return;
         }
+        autenticando = true;
+        btnIniciarSesion.setEnabled(false);
 
-        // SharedPreferences conserva solo información de sesión, nunca la contraseña.
-        sessionManager.iniciarSesion(usuario);
-        Toast.makeText(this, R.string.toast_login_correcto, Toast.LENGTH_SHORT).show();
-        abrirInicio();
+        tareaRepository.validarUsuarioAsync(correo, password, usuario ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+
+                    autenticando = false;
+                    btnIniciarSesion.setEnabled(true);
+
+                    if (usuario == null) {
+                        edtPassword.setError(getString(R.string.error_credenciales));
+                        edtPassword.setText("");
+                        edtPassword.requestFocus();
+                        return;
+                    }
+
+                    // SharedPreferences conserva únicamente el indicador de sesión y el ID del usuario.
+                    sessionManager.iniciarSesion(usuario);
+                    Toast.makeText(this, R.string.toast_login_correcto, Toast.LENGTH_SHORT).show();
+                    abrirInicio();
+                })
+        );
     }
 
     private void abrirInicio() {
@@ -122,8 +166,8 @@ public class LoginActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        if (databaseHelper != null) {
-            databaseHelper.close();
+        if (tareaRepository != null) {
+            tareaRepository.cerrar();
         }
         super.onDestroy();
     }

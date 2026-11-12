@@ -1,5 +1,9 @@
 package com.example.unitasky;
 
+import com.example.unitasky.model.Asignatura;
+import com.example.unitasky.repository.TareaRepository;
+import com.example.unitasky.util.FeedbackHelper;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -11,13 +15,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
 
+/**
+ * Pantalla que lista y administra las asignaturas del usuario.
+ */
 public class MisAsignaturasActivity extends Activity {
 
     private LinearLayout contenedorAsignaturas;
     private TextView txtSinAsignaturas;
     private TareaRepository tareaRepository;
+    private boolean cargandoAsignaturas = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +42,6 @@ public class MisAsignaturasActivity extends Activity {
         btnAgregarAsignatura.setOnClickListener(v ->
                 startActivity(new Intent(MisAsignaturasActivity.this, AgregarAsignaturaActivity.class))
         );
-
-        mostrarAsignaturas();
     }
 
     @Override
@@ -48,30 +53,47 @@ public class MisAsignaturasActivity extends Activity {
     }
 
     private void mostrarAsignaturas() {
-        contenedorAsignaturas.removeAllViews();
-        List<Asignatura> asignaturas = tareaRepository.obtenerAsignaturas();
-
-        if (asignaturas.isEmpty()) {
-            txtSinAsignaturas.setVisibility(View.VISIBLE);
+        if (cargandoAsignaturas) {
             return;
         }
+        cargandoAsignaturas = true;
 
-        txtSinAsignaturas.setVisibility(View.GONE);
-        LayoutInflater inflater = LayoutInflater.from(this);
+        tareaRepository.obtenerAsignaturasAsync(asignaturas ->
+                runOnUiThread(() -> {
+                    cargandoAsignaturas = false;
 
-        for (Asignatura asignatura : asignaturas) {
-            View item = inflater.inflate(R.layout.item_asignatura, contenedorAsignaturas, false);
-            TextView txtNombre = item.findViewById(R.id.txtAsignaturaNombre);
-            Button btnEditar = item.findViewById(R.id.btnEditarAsignatura);
-            Button btnEliminar = item.findViewById(R.id.btnEliminarAsignatura);
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
 
-            txtNombre.setText(asignatura.getNombre());
+                    contenedorAsignaturas.removeAllViews();
 
-            btnEditar.setOnClickListener(v -> abrirEdicion(asignatura));
-            btnEliminar.setOnClickListener(v -> confirmarEliminacion(asignatura));
+                    if (asignaturas.isEmpty()) {
+                        txtSinAsignaturas.setVisibility(View.VISIBLE);
+                        return;
+                    }
 
-            contenedorAsignaturas.addView(item);
-        }
+                    txtSinAsignaturas.setVisibility(View.GONE);
+                    LayoutInflater inflater = LayoutInflater.from(this);
+
+                    for (Asignatura asignatura : asignaturas) {
+                        View item = inflater.inflate(
+                                R.layout.item_asignatura,
+                                contenedorAsignaturas,
+                                false
+                        );
+                        TextView txtNombre = item.findViewById(R.id.txtAsignaturaNombre);
+                        Button btnEditar = item.findViewById(R.id.btnEditarAsignatura);
+                        Button btnEliminar = item.findViewById(R.id.btnEliminarAsignatura);
+
+                        txtNombre.setText(asignatura.getNombre());
+                        btnEditar.setOnClickListener(v -> abrirEdicion(asignatura));
+                        btnEliminar.setOnClickListener(v -> confirmarEliminacion(asignatura));
+
+                        contenedorAsignaturas.addView(item);
+                    }
+                })
+        );
     }
 
     private void abrirEdicion(Asignatura asignatura) {
@@ -85,18 +107,34 @@ public class MisAsignaturasActivity extends Activity {
                 .setTitle(R.string.eliminar_asignatura)
                 .setMessage(R.string.confirmar_eliminar_asignatura)
                 .setNegativeButton(R.string.cancelar, null)
-                .setPositiveButton(R.string.eliminar, (dialog, which) -> eliminarAsignatura(asignatura))
+                .setPositiveButton(R.string.eliminar,
+                        (dialog, which) -> eliminarAsignatura(asignatura))
                 .show();
     }
 
     private void eliminarAsignatura(Asignatura asignatura) {
-        if (!tareaRepository.eliminarAsignatura(asignatura.getId())) {
-            Toast.makeText(this, R.string.toast_error_eliminar_asignatura, Toast.LENGTH_SHORT).show();
-            return;
-        }
+        tareaRepository.eliminarAsignaturaAsync(asignatura.getId(), eliminada ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
 
-        FeedbackHelper.mostrarExito(this, getString(R.string.toast_asignatura_eliminada));
-        mostrarAsignaturas();
+                    if (!eliminada) {
+                        Toast.makeText(
+                                this,
+                                R.string.toast_error_eliminar_asignatura,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        return;
+                    }
+
+                    FeedbackHelper.mostrarExito(
+                            this,
+                            getString(R.string.toast_asignatura_eliminada)
+                    );
+                    mostrarAsignaturas();
+                })
+        );
     }
 
     @Override

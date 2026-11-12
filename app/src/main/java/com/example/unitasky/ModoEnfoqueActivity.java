@@ -1,5 +1,9 @@
 package com.example.unitasky;
 
+import com.example.unitasky.database.DatabaseHelper;
+import com.example.unitasky.model.Tarea;
+import com.example.unitasky.repository.TareaRepository;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -24,6 +28,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Pantalla de temporizador de enfoque que utiliza el sensor de proximidad y registra sesiones por tarea.
+ */
 public class ModoEnfoqueActivity extends Activity implements SensorEventListener {
 
     private static final long DEMORA_ACTIVACION_MS = 1500;
@@ -50,6 +57,7 @@ public class ModoEnfoqueActivity extends Activity implements SensorEventListener
     private long tiempoAcumuladoMs = 0;
     private long inicioTramoMs = 0;
     private boolean activacionPendiente = false;
+    private boolean guardandoSesion = false;
 
     private final Runnable activarModoEnfoque = new Runnable() {
         @Override
@@ -172,44 +180,51 @@ public class ModoEnfoqueActivity extends Activity implements SensorEventListener
     }
 
     private void cargarTareasPendientes() {
-        tareasPendientes.clear();
-        tareasPendientes.addAll(
-                tareaRepository.obtenerTareasPendientes(DatabaseHelper.ORDEN_RECIENTES)
+        tareaRepository.obtenerTareasPendientesAsync(
+                DatabaseHelper.ORDEN_RECIENTES,
+                tareas -> runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+
+                    tareasPendientes.clear();
+                    tareasPendientes.addAll(tareas);
+
+                    List<String> opciones = new ArrayList<>();
+                    opciones.add(getString(R.string.modo_enfoque_selecciona_tarea));
+
+                    for (Tarea tarea : tareasPendientes) {
+                        String asignatura = tarea.getAsignaturaNombre();
+                        if (asignatura != null && !asignatura.trim().isEmpty()) {
+                            opciones.add(getString(
+                                    R.string.modo_enfoque_tarea_con_asignatura,
+                                    tarea.getTitulo(),
+                                    asignatura
+                            ));
+                        } else {
+                            opciones.add(tarea.getTitulo());
+                        }
+                    }
+
+                    if (tareasPendientes.isEmpty()) {
+                        opciones.clear();
+                        opciones.add(getString(R.string.modo_enfoque_sin_tareas_pendientes));
+                        spinnerTareas.setEnabled(false);
+                        txtTareaSeleccionada.setText(R.string.modo_enfoque_sin_tareas_pendientes);
+                    } else {
+                        spinnerTareas.setEnabled(true);
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            this,
+                            android.R.layout.simple_spinner_item,
+                            opciones
+                    );
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerTareas.setAdapter(adapter);
+                    actualizarEstadoBotonHistorial();
+                })
         );
-
-        List<String> opciones = new ArrayList<>();
-        opciones.add(getString(R.string.modo_enfoque_selecciona_tarea));
-
-        for (Tarea tarea : tareasPendientes) {
-            String asignatura = tarea.getAsignaturaNombre();
-            if (asignatura != null && !asignatura.trim().isEmpty()) {
-                opciones.add(getString(
-                        R.string.modo_enfoque_tarea_con_asignatura,
-                        tarea.getTitulo(),
-                        asignatura
-                ));
-            } else {
-                opciones.add(tarea.getTitulo());
-            }
-        }
-
-        if (tareasPendientes.isEmpty()) {
-            opciones.clear();
-            opciones.add(getString(R.string.modo_enfoque_sin_tareas_pendientes));
-            spinnerTareas.setEnabled(false);
-            txtTareaSeleccionada.setText(R.string.modo_enfoque_sin_tareas_pendientes);
-        } else {
-            spinnerTareas.setEnabled(true);
-        }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                opciones
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerTareas.setAdapter(adapter);
-        actualizarEstadoBotonHistorial();
     }
 
     @Override
@@ -230,6 +245,7 @@ public class ModoEnfoqueActivity extends Activity implements SensorEventListener
     protected void onDestroy() {
         cancelarActivacionPendiente();
         handler.removeCallbacks(actualizarTemporizador);
+        liberarSensor();
         if (tareaRepository != null) {
             tareaRepository.cerrar();
         }
@@ -247,6 +263,10 @@ public class ModoEnfoqueActivity extends Activity implements SensorEventListener
                 sensorProximidad,
                 SensorManager.SENSOR_DELAY_NORMAL
         );
+
+        if (!sensorRegistrado) {
+            txtEstadoSensor.setText(R.string.sensor_no_disponible);
+        }
     }
 
     private void liberarSensor() {
@@ -258,7 +278,8 @@ public class ModoEnfoqueActivity extends Activity implements SensorEventListener
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() != Sensor.TYPE_PROXIMITY || event.values.length == 0) {
+        if (sensorProximidad == null || event.sensor.getType() != Sensor.TYPE_PROXIMITY
+                || event.values.length == 0) {
             return;
         }
 
@@ -440,28 +461,39 @@ public class ModoEnfoqueActivity extends Activity implements SensorEventListener
         String fecha = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 .format(new Date());
 
-        boolean guardada = tareaRepository.guardarSesionEnfoque(
+        if (guardandoSesion) {
+            return;
+        }
+        guardandoSesion = true;
+
+        tareaRepository.guardarSesionEnfoqueAsync(
                 tareaSeleccionadaId,
                 fecha,
-                duracionSegundos
-        );
+                duracionSegundos,
+                guardada -> runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
 
-        if (guardada) {
-            tiempoAcumuladoMs = 0;
-            actualizarTiempoEnPantalla();
-            txtEstadoSensor.setText(R.string.modo_enfoque_pausado);
-            Toast.makeText(
-                    this,
-                    R.string.modo_enfoque_sesion_guardada,
-                    Toast.LENGTH_SHORT
-            ).show();
-        } else {
-            Toast.makeText(
-                    this,
-                    R.string.modo_enfoque_error_guardar_sesion,
-                    Toast.LENGTH_SHORT
-            ).show();
-        }
+                    guardandoSesion = false;
+                    if (guardada) {
+                        tiempoAcumuladoMs = 0;
+                        actualizarTiempoEnPantalla();
+                        txtEstadoSensor.setText(R.string.modo_enfoque_pausado);
+                        Toast.makeText(
+                                this,
+                                R.string.modo_enfoque_sesion_guardada,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    } else {
+                        Toast.makeText(
+                                this,
+                                R.string.modo_enfoque_error_guardar_sesion,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                })
+        );
     }
 
     @Override
