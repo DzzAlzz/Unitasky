@@ -162,18 +162,14 @@ Estas capturas corresponden al funcionamiento real de UniTasky durante las prueb
 
 ## Diagrama de Navegación y Flujo de Pantallas
 
-El siguiente diagrama muestra las principales Activities de UniTasky y cómo se relacionan mediante la navegación de la aplicación.
-
 <p align="center">
-  <img src="./docs/diagramas/UniTasky_Diagrama_Navegacion.png" width="800">
+  <img src="./docs/diagramas/Diagrama de Navegación y Flujo Unitasky.png" width="800">
 </p>
 
 ## Modelo Entidad-Relación de SQLite
 
-El modelo representa las tablas `usuarios`, `asignaturas`, `tareas` y `sesiones_enfoque`, junto con las relaciones utilizadas por la aplicación.
-
 <p align="center">
-  <img src="./docs/diagramas/UniTasky_MER_SQLite.png" width="800">
+  <img src="./docs/diagramas/Diagrama Modelo Entidad-Relación Unitasky.png" width="800">
 </p>
 
 ## Documentación en código
