@@ -1,35 +1,46 @@
 package com.example.unitasky;
 
+import com.example.unitasky.repository.TareaRepository;
+
 import android.app.Activity;
-import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * Pantalla que permite registrar un nuevo usuario en la base de datos local.
+ */
 public class RegistroActivity extends Activity {
 
     private EditText edtNombre;
     private EditText edtCorreo;
     private EditText edtPassword;
     private EditText edtConfirmarPassword;
-    private DatabaseHelper databaseHelper;
+    private Button btnCrearCuenta;
+    private TareaRepository tareaRepository;
+    private boolean registrando = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE
+        );
         setContentView(R.layout.activity_registro);
 
         edtNombre = findViewById(R.id.edtNombreRegistro);
         edtCorreo = findViewById(R.id.edtCorreoRegistro);
         edtPassword = findViewById(R.id.edtPasswordRegistro);
         edtConfirmarPassword = findViewById(R.id.edtConfirmarPassword);
-        Button btnCrearCuenta = findViewById(R.id.btnCrearCuenta);
+        btnCrearCuenta = findViewById(R.id.btnCrearCuenta);
         TextView txtVolverLogin = findViewById(R.id.txtVolverLogin);
 
-        databaseHelper = new DatabaseHelper(this);
+        tareaRepository = new TareaRepository(this);
 
         btnCrearCuenta.setOnClickListener(v -> validarRegistro());
         txtVolverLogin.setOnClickListener(v -> finish());
@@ -88,32 +99,60 @@ public class RegistroActivity extends Activity {
             return;
         }
 
-        if (databaseHelper.existeCorreo(correo)) {
-            edtCorreo.setError(getString(R.string.error_correo_registrado));
-            edtCorreo.requestFocus();
+        if (registrando) {
             return;
         }
+        registrando = true;
+        btnCrearCuenta.setEnabled(false);
 
-        long idUsuario;
-        try {
-            idUsuario = databaseHelper.insertarUsuario(nombre, correo, password);
-        } catch (SQLiteConstraintException e) {
-            idUsuario = -1;
-        }
+        tareaRepository.existeCorreoAsync(correo, existe ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
 
-        if (idUsuario == -1) {
-            Toast.makeText(this, R.string.toast_error_registrar_usuario, Toast.LENGTH_SHORT).show();
-            return;
-        }
+                    if (existe) {
+                        registrando = false;
+                        btnCrearCuenta.setEnabled(true);
+                        edtCorreo.setError(getString(R.string.error_correo_registrado));
+                        edtCorreo.requestFocus();
+                        return;
+                    }
 
-        Toast.makeText(this, R.string.toast_usuario_registrado, Toast.LENGTH_SHORT).show();
-        finish();
+                    insertarUsuario(nombre, correo, password);
+                })
+        );
+    }
+
+    private void insertarUsuario(String nombre, String correo, String password) {
+        tareaRepository.insertarUsuarioAsync(nombre, correo, password, idUsuario ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+
+                    registrando = false;
+                    btnCrearCuenta.setEnabled(true);
+
+                    if (idUsuario == null || idUsuario == -1L) {
+                        Toast.makeText(
+                                this,
+                                R.string.toast_error_registrar_usuario,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        return;
+                    }
+
+                    Toast.makeText(this, R.string.toast_usuario_registrado, Toast.LENGTH_SHORT).show();
+                    finish();
+                })
+        );
     }
 
     @Override
     protected void onDestroy() {
-        if (databaseHelper != null) {
-            databaseHelper.close();
+        if (tareaRepository != null) {
+            tareaRepository.cerrar();
         }
         super.onDestroy();
     }

@@ -1,5 +1,8 @@
 package com.example.unitasky;
 
+import com.example.unitasky.model.SesionEnfoque;
+import com.example.unitasky.repository.TareaRepository;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,9 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
 import java.util.Locale;
 
+/**
+ * Pantalla que muestra el historial y tiempo acumulado de enfoque de una tarea.
+ */
 public class HistorialEnfoqueActivity extends Activity {
 
     public static final String EXTRA_TAREA_ID = "tarea_id";
@@ -23,6 +28,7 @@ public class HistorialEnfoqueActivity extends Activity {
     private TextView txtTiempoTotal;
     private TextView txtEstadoVacio;
     private LinearLayout contenedorSesiones;
+    private boolean tareaValidada = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,61 +50,90 @@ public class HistorialEnfoqueActivity extends Activity {
             return;
         }
 
-        Tarea tarea = tareaRepository.obtenerTareaPorId(tareaId);
-        if (tarea == null) {
-            Toast.makeText(this, R.string.historial_enfoque_tarea_no_valida, Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
-        String titulo = getIntent().getStringExtra(EXTRA_TAREA_TITULO);
-        if (titulo == null || titulo.trim().isEmpty()) {
-            titulo = tarea.getTitulo();
-        }
-        txtTarea.setText(getString(R.string.historial_enfoque_tarea_formato, titulo));
-
         btnVolver.setOnClickListener(v -> finish());
+
+        tareaRepository.obtenerTareaPorIdAsync(tareaId, tarea ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+
+                    if (tarea == null) {
+                        Toast.makeText(
+                                this,
+                                R.string.historial_enfoque_tarea_no_valida,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        finish();
+                        return;
+                    }
+
+                    String titulo = getIntent().getStringExtra(EXTRA_TAREA_TITULO);
+                    if (titulo == null || titulo.trim().isEmpty()) {
+                        titulo = tarea.getTitulo();
+                    }
+                    txtTarea.setText(getString(R.string.historial_enfoque_tarea_formato, titulo));
+                    tareaValidada = true;
+                    cargarSesiones();
+                })
+        );
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (tareaId > 0 && tareaRepository != null) {
+        if (tareaId > 0 && tareaRepository != null && tareaValidada) {
             cargarSesiones();
         }
     }
 
     private void cargarSesiones() {
-        int totalSegundos = tareaRepository.obtenerTiempoTotalEnfoque(tareaId);
-        txtTiempoTotal.setText(getString(
-                R.string.historial_enfoque_total_formato,
-                formatearDuracion(totalSegundos)
-        ));
+        tareaRepository.obtenerTiempoTotalEnfoqueAsync(tareaId, totalSegundos ->
+                runOnUiThread(() -> {
+                    if (!isFinishing() && !isDestroyed()) {
+                        txtTiempoTotal.setText(getString(
+                                R.string.historial_enfoque_total_formato,
+                                formatearDuracion(totalSegundos)
+                        ));
+                    }
+                })
+        );
 
-        List<SesionEnfoque> sesiones = tareaRepository.obtenerSesionesEnfoque(tareaId);
-        contenedorSesiones.removeAllViews();
+        tareaRepository.obtenerSesionesEnfoqueAsync(tareaId, sesiones ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
 
-        if (sesiones.isEmpty()) {
-            txtEstadoVacio.setVisibility(View.VISIBLE);
-            return;
-        }
+                    contenedorSesiones.removeAllViews();
 
-        txtEstadoVacio.setVisibility(View.GONE);
-        LayoutInflater inflater = LayoutInflater.from(this);
+                    if (sesiones.isEmpty()) {
+                        txtEstadoVacio.setVisibility(View.VISIBLE);
+                        return;
+                    }
 
-        for (SesionEnfoque sesion : sesiones) {
-            View item = inflater.inflate(R.layout.item_sesion_enfoque, contenedorSesiones, false);
-            TextView txtFecha = item.findViewById(R.id.txtSesionFecha);
-            TextView txtDuracion = item.findViewById(R.id.txtSesionDuracion);
+                    txtEstadoVacio.setVisibility(View.GONE);
+                    LayoutInflater inflater = LayoutInflater.from(this);
 
-            txtFecha.setText(sesion.getFecha());
-            txtDuracion.setText(getString(
-                    R.string.historial_enfoque_duracion_formato,
-                    formatearDuracion(sesion.getDuracionSegundos())
-            ));
+                    for (SesionEnfoque sesion : sesiones) {
+                        View item = inflater.inflate(
+                                R.layout.item_sesion_enfoque,
+                                contenedorSesiones,
+                                false
+                        );
+                        TextView txtFecha = item.findViewById(R.id.txtSesionFecha);
+                        TextView txtDuracion = item.findViewById(R.id.txtSesionDuracion);
 
-            contenedorSesiones.addView(item);
-        }
+                        txtFecha.setText(sesion.getFecha());
+                        txtDuracion.setText(getString(
+                                R.string.historial_enfoque_duracion_formato,
+                                formatearDuracion(sesion.getDuracionSegundos())
+                        ));
+
+                        contenedorSesiones.addView(item);
+                    }
+                })
+        );
     }
 
     private String formatearDuracion(int totalSegundos) {

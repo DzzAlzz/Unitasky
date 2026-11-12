@@ -1,5 +1,9 @@
 package com.example.unitasky;
 
+import com.example.unitasky.model.Usuario;
+import com.example.unitasky.repository.TareaRepository;
+import com.example.unitasky.util.SessionManager;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -10,6 +14,9 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
+/**
+ * Panel principal que resume la información académica y permite acceder a los módulos de UniTasky.
+ */
 public class InicioActivity extends Activity {
 
     private TextView txtUsuarioSesion;
@@ -25,21 +32,15 @@ public class InicioActivity extends Activity {
     private TextView txtUltimaSesionDetalle;
     private TareaRepository tareaRepository;
     private SessionManager sessionManager;
-    private DatabaseHelper databaseHelper;
+    private boolean validandoSesion = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_inicio);
 
         sessionManager = new SessionManager(this);
-        databaseHelper = new DatabaseHelper(this);
-
-        if (!validarSesionActual()) {
-            volverAlLogin();
-            return;
-        }
-
-        setContentView(R.layout.activity_inicio);
+        tareaRepository = new TareaRepository(this);
 
         txtUsuarioSesion = findViewById(R.id.txtUsuarioSesion);
         txtCantidadPendientes = findViewById(R.id.txtCantidadPendientes);
@@ -60,8 +61,6 @@ public class InicioActivity extends Activity {
         Button btnModoEnfoque = findViewById(R.id.btnModoEnfoque);
         Button btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
 
-        tareaRepository = new TareaRepository(this);
-
         btnMisTareas.setOnClickListener(v ->
                 startActivity(new Intent(InicioActivity.this, MisTareasActivity.class)));
 
@@ -78,45 +77,50 @@ public class InicioActivity extends Activity {
                 startActivity(new Intent(InicioActivity.this, ModoEnfoqueActivity.class)));
 
         btnCerrarSesion.setOnClickListener(v -> confirmarCierreSesion());
-
-        mostrarUsuarioActual();
-        cargarResumen();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (sessionManager == null || databaseHelper == null) {
+        validarSesionYCargar();
+    }
+
+    private void validarSesionYCargar() {
+        if (sessionManager == null || tareaRepository == null || validandoSesion) {
             return;
         }
 
-        if (!validarSesionActual()) {
+        if (!sessionManager.haySesionIniciada()) {
             volverAlLogin();
             return;
         }
 
-        if (tareaRepository != null) {
-            mostrarUsuarioActual();
-            cargarResumen();
-        }
+        validandoSesion = true;
+        long usuarioId = sessionManager.getUsuarioId();
+
+        tareaRepository.obtenerUsuarioPorIdAsync(usuarioId, usuario ->
+                runOnUiThread(() -> {
+                    validandoSesion = false;
+
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+
+                    if (usuario == null) {
+                        sessionManager.cerrarSesion();
+                        volverAlLogin();
+                        return;
+                    }
+
+                    mostrarUsuarioActual(usuario);
+                    cargarResumen();
+                })
+        );
     }
 
-    private boolean validarSesionActual() {
-        if (!sessionManager.haySesionIniciada()) {
-            return false;
-        }
-        Usuario usuario = databaseHelper.obtenerUsuarioPorId(sessionManager.getUsuarioId());
-        if (usuario == null) {
-            sessionManager.cerrarSesion();
-            return false;
-        }
-        sessionManager.actualizarDatosUsuario(usuario);
-        return true;
-    }
-
-    private void mostrarUsuarioActual() {
-        String nombre = sessionManager.getNombreUsuario().trim();
-        String correo = sessionManager.getCorreoUsuario().trim();
+    private void mostrarUsuarioActual(Usuario usuario) {
+        String nombre = usuario.getNombre() == null ? "" : usuario.getNombre().trim();
+        String correo = usuario.getCorreo() == null ? "" : usuario.getCorreo().trim();
 
         if (!nombre.isEmpty()) {
             txtUsuarioSesion.setText(getString(R.string.formato_usuario_sesion_nombre, nombre, correo));
@@ -126,60 +130,111 @@ public class InicioActivity extends Activity {
     }
 
     private void cargarResumen() {
-        txtCantidadPendientes.setText(String.valueOf(tareaRepository.contarTareasPendientes()));
-        txtCantidadCompletadas.setText(String.valueOf(tareaRepository.contarTareasCompletadas()));
-        txtCantidadAsignaturas.setText(String.valueOf(tareaRepository.contarAsignaturas()));
+        tareaRepository.contarTareasPendientesAsync(cantidad ->
+                runOnUiThread(() -> {
+                    if (!isFinishing() && !isDestroyed()) {
+                        txtCantidadPendientes.setText(String.valueOf(cantidad));
+                    }
+                })
+        );
 
-        Tarea proximaEntrega = tareaRepository.obtenerProximaEntrega();
-        if (proximaEntrega == null) {
-            txtProximaTitulo.setText(R.string.sin_entregas_inicio);
-            txtProximaAsignatura.setVisibility(View.GONE);
-            txtProximaFecha.setVisibility(View.GONE);
-            txtProximaPrioridad.setVisibility(View.GONE);
-        } else {
-            txtProximaTitulo.setText(proximaEntrega.getTitulo());
-            txtProximaAsignatura.setVisibility(View.VISIBLE);
-            txtProximaFecha.setVisibility(View.VISIBLE);
-            txtProximaPrioridad.setVisibility(View.VISIBLE);
+        tareaRepository.contarTareasCompletadasAsync(cantidad ->
+                runOnUiThread(() -> {
+                    if (!isFinishing() && !isDestroyed()) {
+                        txtCantidadCompletadas.setText(String.valueOf(cantidad));
+                    }
+                })
+        );
 
-            String nombreAsignatura = proximaEntrega.getAsignaturaNombre() == null
-                    || proximaEntrega.getAsignaturaNombre().trim().isEmpty()
-                    ? getString(R.string.sin_asignatura)
-                    : proximaEntrega.getAsignaturaNombre();
+        tareaRepository.contarAsignaturasAsync(cantidad ->
+                runOnUiThread(() -> {
+                    if (!isFinishing() && !isDestroyed()) {
+                        txtCantidadAsignaturas.setText(String.valueOf(cantidad));
+                    }
+                })
+        );
 
-            txtProximaAsignatura.setText(getString(R.string.formato_asignatura, nombreAsignatura));
-            txtProximaFecha.setText(getString(R.string.formato_fecha, proximaEntrega.getFecha()));
-            txtProximaPrioridad.setText(getString(R.string.formato_prioridad, proximaEntrega.getPrioridad()));
-        }
+        tareaRepository.obtenerProximaEntregaAsync(proximaEntrega ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+
+                    if (proximaEntrega == null) {
+                        txtProximaTitulo.setText(R.string.sin_entregas_inicio);
+                        txtProximaAsignatura.setVisibility(View.GONE);
+                        txtProximaFecha.setVisibility(View.GONE);
+                        txtProximaPrioridad.setVisibility(View.GONE);
+                    } else {
+                        txtProximaTitulo.setText(proximaEntrega.getTitulo());
+                        txtProximaAsignatura.setVisibility(View.VISIBLE);
+                        txtProximaFecha.setVisibility(View.VISIBLE);
+                        txtProximaPrioridad.setVisibility(View.VISIBLE);
+
+                        String nombreAsignatura = proximaEntrega.getAsignaturaNombre() == null
+                                || proximaEntrega.getAsignaturaNombre().trim().isEmpty()
+                                ? getString(R.string.sin_asignatura)
+                                : proximaEntrega.getAsignaturaNombre();
+
+                        txtProximaAsignatura.setText(
+                                getString(R.string.formato_asignatura, nombreAsignatura)
+                        );
+                        txtProximaFecha.setText(
+                                getString(R.string.formato_fecha, proximaEntrega.getFecha())
+                        );
+                        txtProximaPrioridad.setText(
+                                getString(R.string.formato_prioridad, proximaEntrega.getPrioridad())
+                        );
+                    }
+                })
+        );
 
         cargarResumenEnfoque();
     }
 
     private void cargarResumenEnfoque() {
-        int totalSegundos = tareaRepository.obtenerTiempoTotalEnfoqueUsuario();
-        txtTiempoTotalEnfoque.setText(formatearDuracion(totalSegundos));
+        tareaRepository.obtenerTiempoTotalEnfoqueUsuarioAsync(totalSegundos ->
+                runOnUiThread(() -> {
+                    if (!isFinishing() && !isDestroyed()) {
+                        txtTiempoTotalEnfoque.setText(formatearDuracion(totalSegundos));
+                    }
+                })
+        );
 
-        SesionEnfoque ultimaSesion = tareaRepository.obtenerUltimaSesionEnfoqueUsuario();
-        if (ultimaSesion == null) {
-            txtUltimaSesionTarea.setText(R.string.resumen_enfoque_sin_sesiones);
-            txtUltimaSesionDetalle.setVisibility(View.GONE);
-            return;
-        }
+        tareaRepository.obtenerUltimaSesionEnfoqueUsuarioAsync(ultimaSesion -> {
+            if (ultimaSesion == null) {
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+                    txtUltimaSesionTarea.setText(R.string.resumen_enfoque_sin_sesiones);
+                    txtUltimaSesionDetalle.setVisibility(View.GONE);
+                });
+                return;
+            }
 
-        Tarea tarea = tareaRepository.obtenerTareaPorId(ultimaSesion.getTareaId());
-        if (tarea == null) {
-            txtUltimaSesionTarea.setText(R.string.resumen_enfoque_sin_sesiones);
-            txtUltimaSesionDetalle.setVisibility(View.GONE);
-            return;
-        }
+            tareaRepository.obtenerTareaPorIdAsync(ultimaSesion.getTareaId(), tarea ->
+                    runOnUiThread(() -> {
+                        if (isFinishing() || isDestroyed()) {
+                            return;
+                        }
 
-        txtUltimaSesionTarea.setText(tarea.getTitulo());
-        txtUltimaSesionDetalle.setVisibility(View.VISIBLE);
-        txtUltimaSesionDetalle.setText(getString(
-                R.string.resumen_enfoque_ultima_detalle,
-                ultimaSesion.getFecha(),
-                formatearDuracion(ultimaSesion.getDuracionSegundos())
-        ));
+                        if (tarea == null) {
+                            txtUltimaSesionTarea.setText(R.string.resumen_enfoque_sin_sesiones);
+                            txtUltimaSesionDetalle.setVisibility(View.GONE);
+                            return;
+                        }
+
+                        txtUltimaSesionTarea.setText(tarea.getTitulo());
+                        txtUltimaSesionDetalle.setVisibility(View.VISIBLE);
+                        txtUltimaSesionDetalle.setText(getString(
+                                R.string.resumen_enfoque_ultima_detalle,
+                                ultimaSesion.getFecha(),
+                                formatearDuracion(ultimaSesion.getDuracionSegundos())
+                        ));
+                    })
+            );
+        });
     }
 
     private String formatearDuracion(int totalSegundos) {
@@ -216,9 +271,6 @@ public class InicioActivity extends Activity {
     protected void onDestroy() {
         if (tareaRepository != null) {
             tareaRepository.cerrar();
-        }
-        if (databaseHelper != null) {
-            databaseHelper.close();
         }
         super.onDestroy();
     }

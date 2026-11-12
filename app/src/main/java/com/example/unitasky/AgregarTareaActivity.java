@@ -1,5 +1,10 @@
 package com.example.unitasky;
 
+import com.example.unitasky.model.Asignatura;
+import com.example.unitasky.model.Tarea;
+import com.example.unitasky.repository.TareaRepository;
+import com.example.unitasky.util.FeedbackHelper;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Pantalla utilizada para registrar una nueva tarea académica.
+ */
 public class AgregarTareaActivity extends Activity {
 
     private EditText edtTitulo;
@@ -29,6 +37,7 @@ public class AgregarTareaActivity extends Activity {
     private TareaRepository tareaRepository;
     private List<Asignatura> asignaturas = new ArrayList<>();
     private boolean actualizandoFecha = false;
+    private boolean guardandoTarea = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,20 +78,28 @@ public class AgregarTareaActivity extends Activity {
     }
 
     private void cargarAsignaturas() {
-        asignaturas = tareaRepository.obtenerAsignaturas();
-        List<String> opciones = new ArrayList<>();
-        opciones.add(getString(R.string.sin_asignatura));
-        for (Asignatura asignatura : asignaturas) {
-            opciones.add(asignatura.getNombre());
-        }
+        tareaRepository.obtenerAsignaturasAsync(resultado ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                opciones
+                    asignaturas = resultado;
+                    List<String> opciones = new ArrayList<>();
+                    opciones.add(getString(R.string.sin_asignatura));
+                    for (Asignatura asignatura : asignaturas) {
+                        opciones.add(asignatura.getNombre());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            this,
+                            android.R.layout.simple_spinner_item,
+                            opciones
+                    );
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerAsignatura.setAdapter(adapter);
+                })
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerAsignatura.setAdapter(adapter);
     }
 
     private long obtenerAsignaturaSeleccionadaId() {
@@ -183,17 +200,35 @@ public class AgregarTareaActivity extends Activity {
                 asignaturaId
         );
 
-        if (!tareaRepository.agregarTarea(nuevaTarea)) {
-            Toast.makeText(this, R.string.toast_error_guardar_tarea, Toast.LENGTH_SHORT).show();
+        if (guardandoTarea) {
             return;
         }
+        guardandoTarea = true;
 
-        FeedbackHelper.mostrarExito(this, getString(R.string.toast_tarea_agregada));
+        tareaRepository.agregarTareaAsync(nuevaTarea, guardada ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
 
-        Intent intent = new Intent(AgregarTareaActivity.this, MisTareasActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(intent);
-        finish();
+                    guardandoTarea = false;
+                    if (!guardada) {
+                        Toast.makeText(
+                                this,
+                                R.string.toast_error_guardar_tarea,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        return;
+                    }
+
+                    FeedbackHelper.mostrarExito(this, getString(R.string.toast_tarea_agregada));
+
+                    Intent intent = new Intent(AgregarTareaActivity.this, MisTareasActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(intent);
+                    finish();
+                })
+        );
     }
 
     private boolean fechaValida(String fecha) {

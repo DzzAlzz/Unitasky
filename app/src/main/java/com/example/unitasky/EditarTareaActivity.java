@@ -1,5 +1,9 @@
 package com.example.unitasky;
 
+import com.example.unitasky.model.Asignatura;
+import com.example.unitasky.repository.TareaRepository;
+import com.example.unitasky.util.FeedbackHelper;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Pantalla utilizada para consultar y modificar una tarea existente.
+ */
 public class EditarTareaActivity extends Activity {
 
     public static final String EXTRA_TAREA_ID = "tarea_id";
@@ -30,6 +37,7 @@ public class EditarTareaActivity extends Activity {
     private List<Asignatura> asignaturas = new ArrayList<>();
     private long tareaId = -1;
     private boolean actualizandoFecha = false;
+    private boolean guardandoCambios = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +58,12 @@ public class EditarTareaActivity extends Activity {
 
         configurarSpinner(spinnerTipo, R.array.tipos_actividad);
         configurarSpinner(spinnerPrioridad, R.array.prioridades);
-        cargarAsignaturas();
         configurarFormatoAutomaticoFecha();
 
         btnVolver.setOnClickListener(v -> finish());
         btnGuardarCambios.setOnClickListener(v -> guardarCambios());
 
-        cargarTarea();
+        cargarAsignaturasYCargarTarea();
     }
 
     private void configurarSpinner(Spinner spinner, int recursoArray) {
@@ -69,21 +76,31 @@ public class EditarTareaActivity extends Activity {
         spinner.setAdapter(adapter);
     }
 
-    private void cargarAsignaturas() {
-        asignaturas = tareaRepository.obtenerAsignaturas();
-        List<String> opciones = new ArrayList<>();
-        opciones.add(getString(R.string.sin_asignatura));
-        for (Asignatura asignatura : asignaturas) {
-            opciones.add(asignatura.getNombre());
-        }
+    private void cargarAsignaturasYCargarTarea() {
+        tareaRepository.obtenerAsignaturasAsync(resultado ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                opciones
+                    asignaturas = resultado;
+                    List<String> opciones = new ArrayList<>();
+                    opciones.add(getString(R.string.sin_asignatura));
+                    for (Asignatura asignatura : asignaturas) {
+                        opciones.add(asignatura.getNombre());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            this,
+                            android.R.layout.simple_spinner_item,
+                            opciones
+                    );
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerAsignatura.setAdapter(adapter);
+
+                    cargarTarea();
+                })
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerAsignatura.setAdapter(adapter);
     }
 
     private void cargarTarea() {
@@ -93,19 +110,30 @@ public class EditarTareaActivity extends Activity {
             return;
         }
 
-        Tarea tarea = tareaRepository.obtenerTareaPorId(tareaId);
-        if (tarea == null) {
-            Toast.makeText(this, R.string.toast_tarea_no_encontrada, Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+        tareaRepository.obtenerTareaPorIdAsync(tareaId, tarea ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
 
-        edtTitulo.setText(tarea.getTitulo());
-        edtDescripcion.setText(tarea.getDescripcion());
-        edtFecha.setText(tarea.getFecha());
-        seleccionarValorSpinner(spinnerTipo, tarea.getTipo());
-        seleccionarValorSpinner(spinnerPrioridad, tarea.getPrioridad());
-        seleccionarAsignatura(tarea.getAsignaturaId());
+                    if (tarea == null) {
+                        Toast.makeText(
+                                this,
+                                R.string.toast_tarea_no_encontrada,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        finish();
+                        return;
+                    }
+
+                    edtTitulo.setText(tarea.getTitulo());
+                    edtDescripcion.setText(tarea.getDescripcion());
+                    edtFecha.setText(tarea.getFecha());
+                    seleccionarValorSpinner(spinnerTipo, tarea.getTipo());
+                    seleccionarValorSpinner(spinnerPrioridad, tarea.getPrioridad());
+                    seleccionarAsignatura(tarea.getAsignaturaId());
+                })
+        );
     }
 
     private void seleccionarValorSpinner(Spinner spinner, String valor) {
@@ -223,23 +251,38 @@ public class EditarTareaActivity extends Activity {
             return;
         }
 
-        boolean actualizado = tareaRepository.actualizarTarea(
+        if (guardandoCambios) {
+            return;
+        }
+        guardandoCambios = true;
+
+        tareaRepository.actualizarTareaAsync(
                 tareaId,
                 titulo,
                 descripcion,
                 tipo,
                 fecha,
                 prioridad,
-                asignaturaId
+                asignaturaId,
+                actualizado -> runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+
+                    guardandoCambios = false;
+                    if (!actualizado) {
+                        Toast.makeText(
+                                this,
+                                R.string.toast_error_editar_tarea,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        return;
+                    }
+
+                    FeedbackHelper.mostrarExito(this, getString(R.string.toast_tarea_editada));
+                    finish();
+                })
         );
-
-        if (!actualizado) {
-            Toast.makeText(this, R.string.toast_error_editar_tarea, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        FeedbackHelper.mostrarExito(this, getString(R.string.toast_tarea_editada));
-        finish();
     }
 
     private boolean fechaValida(String fecha) {

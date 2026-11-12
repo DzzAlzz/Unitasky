@@ -1,18 +1,26 @@
 package com.example.unitasky;
 
+import com.example.unitasky.repository.TareaRepository;
+import com.example.unitasky.util.FeedbackHelper;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * Pantalla utilizada para modificar una asignatura existente.
+ */
 public class EditarAsignaturaActivity extends Activity {
 
     public static final String EXTRA_ASIGNATURA_ID = "asignaturaId";
 
     private EditText edtNombreAsignatura;
+    private Button btnGuardar;
     private TareaRepository tareaRepository;
     private long asignaturaId;
+    private boolean guardandoCambios = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +29,7 @@ public class EditarAsignaturaActivity extends Activity {
 
         edtNombreAsignatura = findViewById(R.id.edtNombreAsignatura);
         Button btnVolver = findViewById(R.id.btnVolver);
-        Button btnGuardar = findViewById(R.id.btnGuardarCambiosAsignatura);
+        btnGuardar = findViewById(R.id.btnGuardarCambiosAsignatura);
 
         tareaRepository = new TareaRepository(this);
         asignaturaId = getIntent().getLongExtra(EXTRA_ASIGNATURA_ID, -1);
@@ -39,15 +47,28 @@ public class EditarAsignaturaActivity extends Activity {
             return;
         }
 
-        Asignatura asignatura = tareaRepository.obtenerAsignaturaPorId(asignaturaId);
-        if (asignatura == null) {
-            Toast.makeText(this, R.string.toast_asignatura_no_encontrada, Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+        btnGuardar.setEnabled(false);
+        tareaRepository.obtenerAsignaturaPorIdAsync(asignaturaId, asignatura ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
 
-        edtNombreAsignatura.setText(asignatura.getNombre());
-        edtNombreAsignatura.setSelection(edtNombreAsignatura.getText().length());
+                    if (asignatura == null) {
+                        Toast.makeText(
+                                this,
+                                R.string.toast_asignatura_no_encontrada,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        finish();
+                        return;
+                    }
+
+                    edtNombreAsignatura.setText(asignatura.getNombre());
+                    edtNombreAsignatura.setSelection(edtNombreAsignatura.getText().length());
+                    btnGuardar.setEnabled(true);
+                })
+        );
     }
 
     private void guardarCambios() {
@@ -60,19 +81,57 @@ public class EditarAsignaturaActivity extends Activity {
             return;
         }
 
-        if (tareaRepository.existeAsignatura(nombre, asignaturaId)) {
-            edtNombreAsignatura.setError(getString(R.string.error_asignatura_duplicada));
-            edtNombreAsignatura.requestFocus();
+        if (guardandoCambios) {
             return;
         }
+        guardandoCambios = true;
+        btnGuardar.setEnabled(false);
 
-        if (!tareaRepository.actualizarAsignatura(asignaturaId, nombre)) {
-            Toast.makeText(this, R.string.toast_error_editar_asignatura, Toast.LENGTH_SHORT).show();
-            return;
-        }
+        tareaRepository.existeAsignaturaAsync(nombre, asignaturaId, existe ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
 
-        FeedbackHelper.mostrarExito(this, getString(R.string.toast_asignatura_actualizada));
-        finish();
+                    if (existe) {
+                        guardandoCambios = false;
+                        btnGuardar.setEnabled(true);
+                        edtNombreAsignatura.setError(getString(R.string.error_asignatura_duplicada));
+                        edtNombreAsignatura.requestFocus();
+                        return;
+                    }
+
+                    actualizarAsignatura(nombre);
+                })
+        );
+    }
+
+    private void actualizarAsignatura(String nombre) {
+        tareaRepository.actualizarAsignaturaAsync(asignaturaId, nombre, actualizada ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+
+                    guardandoCambios = false;
+                    btnGuardar.setEnabled(true);
+
+                    if (!actualizada) {
+                        Toast.makeText(
+                                this,
+                                R.string.toast_error_editar_asignatura,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        return;
+                    }
+
+                    FeedbackHelper.mostrarExito(
+                            this,
+                            getString(R.string.toast_asignatura_actualizada)
+                    );
+                    finish();
+                })
+        );
     }
 
     @Override

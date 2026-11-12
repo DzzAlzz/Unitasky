@@ -1,5 +1,8 @@
 package com.example.unitasky;
 
+import com.example.unitasky.model.Tarea;
+import com.example.unitasky.repository.TareaRepository;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,8 +11,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.List;
 
+/**
+ * Pantalla que muestra las próximas tareas pendientes ordenadas por fecha.
+ */
 public class ProximasEntregasActivity extends Activity {
 
     private LinearLayout contenedorEntregas;
@@ -28,7 +33,6 @@ public class ProximasEntregasActivity extends Activity {
         tareaRepository = new TareaRepository(this);
 
         btnVolver.setOnClickListener(v -> finish());
-        mostrarProximasEntregas();
     }
 
     @Override
@@ -40,39 +44,49 @@ public class ProximasEntregasActivity extends Activity {
     }
 
     private void mostrarProximasEntregas() {
-        contenedorEntregas.removeAllViews();
+        tareaRepository.obtenerProximasEntregasAsync(pendientes ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
 
-        // La consulta ya llega filtrada y ordenada directamente desde SQLite.
-        List<Tarea> pendientes = tareaRepository.obtenerProximasEntregas();
+                    contenedorEntregas.removeAllViews();
 
-        if (pendientes.isEmpty()) {
-            txtSinEntregas.setVisibility(View.VISIBLE);
-            return;
-        }
+                    if (pendientes.isEmpty()) {
+                        txtSinEntregas.setVisibility(View.VISIBLE);
+                        return;
+                    }
 
-        txtSinEntregas.setVisibility(View.GONE);
-        LayoutInflater inflater = LayoutInflater.from(this);
+                    txtSinEntregas.setVisibility(View.GONE);
+                    LayoutInflater inflater = LayoutInflater.from(this);
 
-        for (Tarea tarea : pendientes) {
-            View item = inflater.inflate(R.layout.item_proxima_entrega, contenedorEntregas, false);
+                    for (Tarea tarea : pendientes) {
+                        View item = inflater.inflate(
+                                R.layout.item_proxima_entrega,
+                                contenedorEntregas,
+                                false
+                        );
 
-            TextView txtTitulo = item.findViewById(R.id.txtEntregaTitulo);
-            TextView txtAsignatura = item.findViewById(R.id.txtEntregaAsignatura);
-            TextView txtTipo = item.findViewById(R.id.txtEntregaTipo);
-            TextView txtFecha = item.findViewById(R.id.txtEntregaFecha);
-            TextView txtPrioridad = item.findViewById(R.id.txtEntregaPrioridad);
+                        TextView txtTitulo = item.findViewById(R.id.txtEntregaTitulo);
+                        TextView txtAsignatura = item.findViewById(R.id.txtEntregaAsignatura);
+                        TextView txtTipo = item.findViewById(R.id.txtEntregaTipo);
+                        TextView txtFecha = item.findViewById(R.id.txtEntregaFecha);
+                        TextView txtPrioridad = item.findViewById(R.id.txtEntregaPrioridad);
 
-            txtTitulo.setText(tarea.getTitulo());
-            String nombreAsignatura = tarea.getAsignaturaNombre() == null || tarea.getAsignaturaNombre().trim().isEmpty()
-                    ? getString(R.string.sin_asignatura)
-                    : tarea.getAsignaturaNombre();
-            txtAsignatura.setText(getString(R.string.formato_asignatura, nombreAsignatura));
-            txtTipo.setText(getString(R.string.formato_tipo, tarea.getTipo()));
-            txtFecha.setText(getString(R.string.formato_entrega, tarea.getFecha()));
-            txtPrioridad.setText(getString(R.string.formato_prioridad, tarea.getPrioridad()));
+                        txtTitulo.setText(tarea.getTitulo());
+                        String nombreAsignatura = tarea.getAsignaturaNombre() == null
+                                || tarea.getAsignaturaNombre().trim().isEmpty()
+                                ? getString(R.string.sin_asignatura)
+                                : tarea.getAsignaturaNombre();
+                        txtAsignatura.setText(getString(R.string.formato_asignatura, nombreAsignatura));
+                        txtTipo.setText(getString(R.string.formato_tipo, tarea.getTipo()));
+                        txtFecha.setText(getString(R.string.formato_entrega, tarea.getFecha()));
+                        txtPrioridad.setText(getString(R.string.formato_prioridad, tarea.getPrioridad()));
 
-            contenedorEntregas.addView(item);
-        }
+                        contenedorEntregas.addView(item);
+                    }
+                })
+        );
     }
 
     @Override

@@ -1,15 +1,24 @@
 package com.example.unitasky;
 
+import com.example.unitasky.model.Asignatura;
+import com.example.unitasky.repository.TareaRepository;
+import com.example.unitasky.util.FeedbackHelper;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * Pantalla utilizada para registrar una nueva asignatura.
+ */
 public class AgregarAsignaturaActivity extends Activity {
 
     private EditText edtNombreAsignatura;
+    private Button btnGuardar;
     private TareaRepository tareaRepository;
+    private boolean guardandoAsignatura = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +27,7 @@ public class AgregarAsignaturaActivity extends Activity {
 
         edtNombreAsignatura = findViewById(R.id.edtNombreAsignatura);
         Button btnVolver = findViewById(R.id.btnVolver);
-        Button btnGuardar = findViewById(R.id.btnGuardarAsignatura);
+        btnGuardar = findViewById(R.id.btnGuardarAsignatura);
 
         tareaRepository = new TareaRepository(this);
 
@@ -36,20 +45,58 @@ public class AgregarAsignaturaActivity extends Activity {
             return;
         }
 
-        if (tareaRepository.existeAsignatura(nombre)) {
-            edtNombreAsignatura.setError(getString(R.string.error_asignatura_duplicada));
-            edtNombreAsignatura.requestFocus();
+        if (guardandoAsignatura) {
             return;
         }
+        guardandoAsignatura = true;
+        btnGuardar.setEnabled(false);
 
+        tareaRepository.existeAsignaturaAsync(nombre, existe ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+
+                    if (existe) {
+                        guardandoAsignatura = false;
+                        btnGuardar.setEnabled(true);
+                        edtNombreAsignatura.setError(getString(R.string.error_asignatura_duplicada));
+                        edtNombreAsignatura.requestFocus();
+                        return;
+                    }
+
+                    agregarAsignatura(nombre);
+                })
+        );
+    }
+
+    private void agregarAsignatura(String nombre) {
         Asignatura asignatura = new Asignatura(nombre);
-        if (!tareaRepository.agregarAsignatura(asignatura)) {
-            Toast.makeText(this, R.string.toast_error_guardar_asignatura, Toast.LENGTH_SHORT).show();
-            return;
-        }
+        tareaRepository.agregarAsignaturaAsync(asignatura, guardada ->
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
 
-        FeedbackHelper.mostrarExito(this, getString(R.string.toast_asignatura_agregada));
-        finish();
+                    guardandoAsignatura = false;
+                    btnGuardar.setEnabled(true);
+
+                    if (!guardada) {
+                        Toast.makeText(
+                                this,
+                                R.string.toast_error_guardar_asignatura,
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        return;
+                    }
+
+                    FeedbackHelper.mostrarExito(
+                            this,
+                            getString(R.string.toast_asignatura_agregada)
+                    );
+                    finish();
+                })
+        );
     }
 
     @Override
