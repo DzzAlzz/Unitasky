@@ -90,63 +90,91 @@ Estas capturas corresponden al funcionamiento real de UniTasky durante las prueb
 
 ### Pantalla inicial
 
-![Pantalla inicial de UniTasky](./docs/capturas/01_pantalla_inicial.png)
+<p align="center">
+  <img src="./docs/capturas/01_pantalla_inicial.png" width="280">
+</p>
 
 ### Login
 
-![Login de UniTasky](./docs/capturas/02_login.png)
+<p align="center">
+  <img src="./docs/capturas/02_login.png" width="280">
+</p>
 
 ### Dashboard al iniciar
 
-![Dashboard inicial](./docs/capturas/03_dashboard_inicial.png)
+<p align="center">
+  <img src="./docs/capturas/03_dashboard_inicial.png" width="280">
+</p>
 
 ### Dashboard con información registrada
 
-![Dashboard con información registrada](./docs/capturas/03_dashboard.png)
+<p align="center">
+  <img src="./docs/capturas/03_dashboard.png" width="280">
+</p>
 
 ### Agregar tarea
 
-![Agregar tarea](./docs/capturas/04_agregar_tarea.png)
+<p align="center">
+  <img src="./docs/capturas/04_agregar_tarea.png" width="280">
+</p>
 
 ### Mis tareas
 
-![Mis tareas](./docs/capturas/05_mis_tareas.png)
+<p align="center">
+  <img src="./docs/capturas/05_mis_tareas.png" width="280">
+</p>
 
 ### Mis asignaturas
 
-![Mis asignaturas](./docs/capturas/06_mis_asignaturas.png)
+<p align="center">
+  <img src="./docs/capturas/06_mis_asignaturas.png" width="280">
+</p>
 
 ### Próximas entregas
 
-![Próximas entregas](./docs/capturas/07_proximas_entregas.png)
+<p align="center">
+  <img src="./docs/capturas/07_proximas_entregas.png" width="280">
+</p>
 
 ### Modo Enfoque pausado
 
-![Modo Enfoque pausado](./docs/capturas/08_modo_enfoque_pausado.png)
+<p align="center">
+  <img src="./docs/capturas/08_modo_enfoque_pausado.png" width="280">
+</p>
 
 ### Modo Enfoque activo
 
-![Modo Enfoque activo](./docs/capturas/09_modo_enfoque_activo.png)
+<p align="center">
+  <img src="./docs/capturas/09_modo_enfoque_activo.png" width="280">
+</p>
 
 ### Historial de enfoque
 
-![Historial de enfoque](./docs/capturas/10_historial_enfoque.png)
+<p align="center">
+  <img src="./docs/capturas/10_historial_enfoque.png" width="280">
+</p>
 
 ### Cerrar sesión
 
-![Cerrar sesión](./docs/capturas/11_cerrar_sesion.png)
+<p align="center">
+  <img src="./docs/capturas/11_cerrar_sesion.png" width="280">
+</p>
 
 ## Diagrama de Navegación y Flujo de Pantallas
 
 El siguiente diagrama muestra las principales Activities de UniTasky y cómo se relacionan mediante la navegación de la aplicación.
 
-![Diagrama de Navegación de UniTasky](./docs/diagramas/UniTasky_Diagrama_Navegacion.png)
+<p align="center">
+  <img src="./docs/diagramas/UniTasky_Diagrama_Navegacion.png" width="800">
+</p>
 
 ## Modelo Entidad-Relación de SQLite
 
 El modelo representa las tablas `usuarios`, `asignaturas`, `tareas` y `sesiones_enfoque`, junto con las relaciones utilizadas por la aplicación.
 
-![Modelo Entidad-Relación de UniTasky](./docs/diagramas/UniTasky_MER_SQLite.png)
+<p align="center">
+  <img src="./docs/diagramas/UniTasky_MER_SQLite.png" width="800">
+</p>
 
 ## Documentación en código
 
